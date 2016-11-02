@@ -1,5 +1,5 @@
-**GOAL**: Summarized data excerpt with cited sources
-
+**GOAL**: A person types a paragraph of a thesis and the system finds supporting documents as links, with full citations
+ 
 1. (LOAD STEP) Use Wikipedia Api (as a first example) for a source
 2. (TRANSFORM STEP)
     a) remove stop words
