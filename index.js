@@ -4,6 +4,7 @@
 var fs = require('fs'),
     cheerio = require('cheerio'),
     wikiE = require('./wiki-extract'),
+    sw = require('stopword'),
     w2v = require('word2vec');
 
 function getArticle(page) {
@@ -73,24 +74,26 @@ function getWord2VecModel() {
     });
 };
 
+function getMostSimilar(subject, num) {
+    globalModel.mostSimilar(subject,num);
+}
+
+function getSentences(text) {
+    var documents = text.match( /[^\.!\?]+[\.!\?]+/g );
+    return documents;
+}
+
+
 var subject = 'Azerbaijan',
     inputFile = 'w2vecP.txt',
-    outputFile = 'word2vec.txt';
+    outputFile = 'sentences.txt';
 
-//getArticle(subject)
-//getArticleFromFile(inputFile)
-//    .then(wikiE.extractText)
-//runWord2VecPharses(inputFile)
-//runWord2VecPharses(inputFile)
- /*   .then((body) => {
-        fs.writeFile(outputFile, body);
-    });*/
-
- runWord2Vec()
-     .then(getWord2VecModel)
-     .then( () => {
-        console.log(
-            globalModel.mostSimilar(subject,20)
-        );
-     });
+getArticleFromFile(inputFile)
+    .then(function (text) {
+        var sentences = getSentences(text);
+        sentences.forEach( (sent, id, obj) => {
+            obj[id] = sw.removeStopwords(sent.split(' ')).join(' ');
+});
+        fs.writeFile(outputFile, sentences);
+    });
 
