@@ -7,6 +7,7 @@ var fs = require('fs'),
     sw = require('stopword'),
     w2v = require('word2vec');
 
+/* WIKIPEDIA */
 function getArticle(page) {
     var request = require('request-promise-native'),
         urlparse = require('url'),
@@ -48,52 +49,90 @@ function sanitizeArticle(article) {
     return f.flattenItem(article);
 }
 
-function runWord2VecPharses(input) {
-    return new Promise( function(resolve, reject) {
-            w2v.word2phrase(input, "w2vecP.txt", {}, resolve);
-        }
-    );
-}
-
-function runWord2Vec() {
-    var input = 'w2vecP.txt', output = 'w2vecModel.txt';
-    return new Promise( function(resolve, reject) {
-            w2v.word2vec(input, output, {}, resolve);
-        }
-    );
-}
-
-var globalModel = null;
-function getWord2VecModel() {
-    var input = './w2vecModel.txt';
-    return new Promise( (resolve, reject) => {
-        w2v.loadModel(input, (error,model) => {
-            globalModel = model;
-            resolve();
-        });
-    });
-};
-
-function getMostSimilar(subject, num) {
-    globalModel.mostSimilar(subject,num);
-}
+/* W2Vec */
 
 function getSentences(text) {
+    text = text.replace(/\r\n{1}/g, ' ');
+    text = text.replace(/[^\w\s\.?!_]/g,'');
     var documents = text.match( /[^\.!\?]+[\.!\?]+/g );
     return documents;
 }
 
+function removeSW(text) {
+    var sentences = getSentences(text);
+    sentences.forEach( (sent, id, obj) => {
+        obj[id] = sw.removeStopwords(sent.split(' ')).join(' ');
+    });
+    return sentences;
+}
+
+function runWord2VecPhases(input) {
+    var output = "w2vStep1.txt";
+    return new Promise( function(resolve, reject) {
+            w2v.word2phrase(input, output, {}, () => {
+                resolve(output);
+            });
+        }
+    );
+}
+
+function removeSWFromFile(inputFile) {
+    var output = "w2vecStep2.txt";
+    return getArticleFromFile(inputFile)
+        .then((text) => {
+            text = removeSW(text);
+            fs.writeFile(output, text);
+            return "woSW" + inputFile;
+        })
+}
+
+function runWord2Vec(inputFileName,outputFileName) {
+    var input = "w2vStep1.txt", output = "w2vStep2.txt";
+    if (inputFileName != null) {
+        input = './' + inputFileName;
+    }
+    else if (outputFileName != null) {
+        output = './' + outputFileName;
+    }
+    return new Promise( function(resolve, reject) {
+            w2v.word2vec(input, output, {}, () => {
+                resolve(output);
+            });
+        }
+    );
+}
+
+function getWord2VecModel(fileName) {
+    var input = "w2vStep2.txt";
+    if (fileName != null) {
+        input = './' + fileName;
+    }
+    return new Promise( (resolve, reject) => {
+        w2v.loadModel(input, (error,model) => {
+            resolve(model);
+        });
+    });
+};
+
+function runW2VAndGetModel(inputFile) {
+    return removeSWFromFile(inputFile)
+                .then(runWord2VecPhases)
+                .then(runWord2Vec)
+                .then(getWord2VecModel);
+}
+
+function getMostSimilar(model, subject, num) {
+    return model.mostSimilar(subject,num);
+}
 
 var subject = 'Azerbaijan',
-    inputFile = 'w2vecP.txt',
+    inputFile = 'sample3.html',
     outputFile = 'sentences.txt';
 
-getArticleFromFile(inputFile)
-    .then(function (text) {
-        var sentences = getSentences(text);
-        sentences.forEach( (sent, id, obj) => {
-            obj[id] = sw.removeStopwords(sent.split(' ')).join(' ');
-});
-        fs.writeFile(outputFile, sentences);
+runW2VAndGetModel(inputFile)
+//getWord2VecModel('w2vStep2.txt')
+    .then((model) => {
+        var result = getMostSimilar(model, subject, 20);
+        console.log(result);
     });
 
