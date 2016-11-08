@@ -5,7 +5,8 @@ var fs = require('fs'),
     cheerio = require('cheerio'),
     wikiE = require('./wiki-extract'),
     sw = require('stopword'),
-    w2v = require('word2vec');
+    w2v = require('word2vec'),
+    concat = require('concat-files');
 
 /* WIKIPEDIA */
 function getArticle(page) {
@@ -49,6 +50,14 @@ function sanitizeArticle(article) {
     return f.flattenItem(article);
 }
 
+function articleToTextFile(subject) {
+    return getArticle(subject).then( (article) => {
+        var text = wikiE.extractText(article);
+        fs.writeFile(subject + '.txt', text);
+        return subject + '.txt';
+    })
+}
+
 /* W2Vec */
 
 function getSentences(text) {
@@ -61,13 +70,31 @@ function getSentences(text) {
 function removeSW(text) {
     var sentences = getSentences(text);
     sentences.forEach( (sent, id, obj) => {
-        obj[id] = sw.removeStopwords(sent.split(' ')).join(' ');
+        var words = sent.replace(/[\,\(\)\n0-9]/g, ' ').trim().split(' ');
+        words.forEach( (word, i, o) => {
+            o[i] = word.trim();
+            if (o[i].length < 3) {
+                o[i] = '';
+            }
+        });
+        words.filter( (value) => { return value !== ''; } );
+        obj[id] = sw.removeStopwords(words).join(' ');
     });
     return sentences;
 }
 
-function runWord2VecPhases(input) {
+function removeSWFromFile(inputFile) {
     var output = "w2vStep1.txt";
+    return getArticleFromFile(inputFile)
+        .then((text) => {
+            text = removeSW(text).join(' ');
+            fs.writeFile(output, text);
+            return output;
+        })
+}
+
+function runWord2VecPhases(input) {
+    var output = "w2vStep2.txt";
     return new Promise( function(resolve, reject) {
             w2v.word2phrase(input, output, {}, () => {
                 resolve(output);
@@ -76,22 +103,12 @@ function runWord2VecPhases(input) {
     );
 }
 
-function removeSWFromFile(inputFile) {
-    var output = "w2vecStep2.txt";
-    return getArticleFromFile(inputFile)
-        .then((text) => {
-            text = removeSW(text);
-            fs.writeFile(output, text);
-            return "woSW" + inputFile;
-        })
-}
-
 function runWord2Vec(inputFileName,outputFileName) {
-    var input = "w2vStep1.txt", output = "w2vStep2.txt";
+    var input = "w2vStep2.txt", output = "w2vStep3.txt";
     if (inputFileName != null) {
         input = './' + inputFileName;
     }
-    else if (outputFileName != null) {
+    if (outputFileName != null) {
         output = './' + outputFileName;
     }
     return new Promise( function(resolve, reject) {
@@ -103,7 +120,7 @@ function runWord2Vec(inputFileName,outputFileName) {
 }
 
 function getWord2VecModel(fileName) {
-    var input = "w2vStep2.txt";
+    var input = "w2vStep3.txt";
     if (fileName != null) {
         input = './' + fileName;
     }
@@ -114,10 +131,12 @@ function getWord2VecModel(fileName) {
     });
 };
 
-function runW2VAndGetModel(inputFile) {
+function runW2VAndGetModel(inputFile, subject) {
     return removeSWFromFile(inputFile)
                 .then(runWord2VecPhases)
-                .then(runWord2Vec)
+                .then((inputFile) => {
+                    return runWord2Vec(inputFile, subject + '-w2v.txt');
+                })
                 .then(getWord2VecModel);
 }
 
@@ -125,14 +144,52 @@ function getMostSimilar(model, subject, num) {
     return model.mostSimilar(subject,num);
 }
 
-var subject = 'Azerbaijan',
-    inputFile = 'sample3.html',
-    outputFile = 'sentences.txt';
+function compareTwoArticles(subjects) {
+    return new Promise((resolve, reject) => {
+        var fName = 'corpus.txt';
+        articleToTextFile(subjects[0])
+            .then((firstFileName) => {
+                articleToTextFile(subjects[1]).then((secondFileName) => {
+                    concat([firstFileName, secondFileName], fName, runAlg);
+                });
+            });
 
-runW2VAndGetModel(inputFile)
-//getWord2VecModel('w2vStep2.txt')
-    .then((model) => {
-        var result = getMostSimilar(model, subject, 20);
-        console.log(result);
+        var runAlg = () => {
+            return runW2VAndGetModel(fName, subjects[0])
+                .then((model) => {
+                    var result = model.similarity(subjects[0], subjects[1])
+                    console.log(result);
+                    resolve();
+                });
+        }
     });
+}
+
+
+var relatedSubjects = [
+    'Azerbaijan',
+    'Russia'
+];
+
+var semiRelatedSubjects = [
+    'Azerbaijan',
+    'Baku'
+];
+
+var unrelatedSubjects = [
+    'Azerbaijan',
+    'Algebra'
+];
+
+compareTwoArticles(relatedSubjects) // 0.998
+    .then( () => {
+            compareTwoArticles(semiRelatedSubjects) // 0.183
+                .then ( () => {
+                    compareTwoArticles(unrelatedSubjects); // -0.005
+                });
+    });
+
+
+
+
 
