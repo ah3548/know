@@ -6,7 +6,27 @@ var fs = require('fs'),
     wikiE = require('./wiki-extract'),
     sw = require('stopword'),
     w2v = require('word2vec'),
-    concat = require('concat-files');
+    concat = require('concat-files'),
+    lda = require('lda');
+
+var englishStopWords = require('stopword/lib/stopwords_en').words;
+englishStopWords = englishStopWords.concat([
+    'retrieved'
+]);
+
+var results = {
+    subject1: {
+        title: '',
+        lda: ''
+    },
+    subject2: {
+        title: '',
+        lda: ''
+    },
+    similarity: 0
+};
+
+var queries = []; // list of results
 
 /* WIKIPEDIA */
 function getArticle(page) {
@@ -72,14 +92,17 @@ function removeSW(text) {
     sentences.forEach( (sent, id, obj) => {
         var words = sent.replace(/[\,\(\)\n0-9]/g, ' ').trim().split(' ');
         words.forEach( (word, i, o) => {
-            o[i] = word.trim();
-            if (o[i].length < 3) {
+            if (word.trim()) {
+                o[i] = word.trim();
+            }
+            if (o[i] && o[i].length < 3) {
                 o[i] = '';
             }
         });
-        words.filter( (value) => { return value !== ''; } );
-        obj[id] = sw.removeStopwords(words).join(' ');
+        words = words.filter( (value) => { return value !== ''; } );
+        obj[id] = sw.removeStopwords(words, englishStopWords).join(' ');
     });
+    sentences = sentences.filter( (value) => { return value !== ''; } );
     return sentences;
 }
 
@@ -144,6 +167,7 @@ function getMostSimilar(model, subject, num) {
     return model.mostSimilar(subject,num);
 }
 
+/* W2V COMPARISON */
 function compareTwoArticles(subjects) {
     return new Promise((resolve, reject) => {
         var fName = 'corpus.txt';
@@ -166,6 +190,28 @@ function compareTwoArticles(subjects) {
 }
 
 
+/* LDA */
+function getLDA(text) {
+    var sent = removeSW(text);
+    return lda(sent, 2, 3);
+}
+
+function getLDAForSubjects(subjects) {
+    var ldas = [];
+    return getArticle(subjects[0])
+        .then(wikiE.extractText)
+        .then( (text) => {
+            ldas[0] = getLDA(text);
+            return subjects[1];
+        })
+        .then(getArticle)
+        .then(wikiE.extractText)
+        .then( (text) => {
+            ldas[1] = getLDA(text);
+            return ldas;
+        });
+}
+
 var relatedSubjects = [
     'Azerbaijan',
     'Russia'
@@ -181,15 +227,18 @@ var unrelatedSubjects = [
     'Algebra'
 ];
 
-compareTwoArticles(relatedSubjects) // 0.998
+/*compareTwoArticles(relatedSubjects) // 0.998
     .then( () => {
             compareTwoArticles(semiRelatedSubjects) // 0.183
                 .then ( () => {
                     compareTwoArticles(unrelatedSubjects); // -0.005
                 });
+    });*/
+
+getLDAForSubjects(relatedSubjects)
+    .then( (ldas) => {
+        console.log(JSON.stringify(ldas));
     });
-
-
 
 
 
