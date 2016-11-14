@@ -7,12 +7,18 @@ var fs = require('fs'),
     sw = require('stopword'),
     w2v = require('word2vec'),
     concat = require('concat-files'),
-    lda = require('lda');
+    lda = require('lda'),
+    moment = require('moment');
 
 var englishStopWords = require('stopword/lib/stopwords_en').words;
 englishStopWords = englishStopWords.concat([
-    'retrieved'
+    'retrieved',
+    'isbn',
+    'archived',
+    'original'
 ]);
+var months =  moment.months('MMMM').map((s) => { return String.prototype.toLowerCase.call(s)});
+englishStopWords = englishStopWords.concat( months );
 
 var results = {
     subject1: {
@@ -29,7 +35,7 @@ var results = {
 var queries = []; // list of results
 
 /* WIKIPEDIA */
-function getArticle(page) {
+function getArticleFromWiki(page) {
     var request = require('request-promise-native'),
         urlparse = require('url'),
         params = {
@@ -37,7 +43,7 @@ function getArticle(page) {
             page: page,
             prop: "text",
             format: 'json',
-            redirect: true,
+            redirects: true,
             noimages: true,
             disabletoc: true,
             disableeditsection: true,
@@ -55,9 +61,9 @@ function getArticle(page) {
         });
 }
 
-function getArticleFromFile(fileName) {
+function getArticleFromFile(subject) {
     return new Promise( (resolve, reject) => {
-        fs.readFile(fileName, 'utf8', (err, body) => {
+        fs.readFile(subject + '.txt', 'utf8', (err, body) => {
             resolve(body);
         });
     });
@@ -70,19 +76,39 @@ function sanitizeArticle(article) {
     return f.flattenItem(article);
 }
 
+function getArticle(subject) {
+    return new Promise((resolve, reject) => {
+        fs.access(subject + '.txt', fs.constants.R_OK, (err) => {
+            if (err) {
+                return articleToTextFile(subject).then(getArticleFromFile).then(resolve);
+            }
+            else {
+                return getArticleFromFile(subject).then(resolve);
+            }
+        })});
+}
+
 function articleToTextFile(subject) {
-    return getArticle(subject).then( (article) => {
-        var text = wikiE.extractText(article);
-        fs.writeFile(subject + '.txt', text);
-        return subject + '.txt';
-    })
+    return getArticleFromWiki(subject)
+        .then(wikiE.removeReferences)
+        .then( (article) => {
+            var text = wikiE.extractText(article);
+            fs.writeFileSync(subject + '.txt', text);
+            return subject + '.txt';
+        })
 }
 
 /* W2Vec */
 
 function getSentences(text) {
-    text = text.replace(/\r\n{1}/g, ' ');
-    text = text.replace(/[^\w\s\.?!_]/g,'');
+    text = text.replace(/\r\n{1}/g, ' '); // remove windows newlines
+    text = text.replace(/\[\d\]/g, ' '); // remove references
+    text = text.replace(/[0-9]+\.[0-9]+|[0-9]+/g,' '); // remove numbers
+    text = text.replace(/[`°•~@#$%^&*()|+\=;:",<>\{\}\[\]\\\/]/gi, ' '); // remove special characters
+    text = text.replace(/[\n]/g,' ');
+    text = text.replace(/[\s]{2,}/gi, ' '); // remove extra spaces
+    text = text.replace(/Main articles|Main article/gi, '');
+    text = text.replace(/www/gi,'')
     var documents = text.match( /[^\.!\?]+[\.!\?]+/g );
     return documents;
 }
@@ -90,19 +116,23 @@ function getSentences(text) {
 function removeSW(text) {
     var sentences = getSentences(text);
     sentences.forEach( (sent, id, obj) => {
-        var words = sent.replace(/[\,\(\)\n0-9]/g, ' ').trim().split(' ');
+        var words = sent.trim().split(' ');
         words.forEach( (word, i, o) => {
             if (word.trim()) {
                 o[i] = word.trim();
             }
-            if (o[i] && o[i].length < 3) {
+            if (o[i] && (o[i].length <= 3 || obj[i].length > 50)) {
                 o[i] = '';
             }
         });
-        words = words.filter( (value) => { return value !== ''; } );
+        words = words.filter( (value) => {
+            return value !== '';
+        } );
         obj[id] = sw.removeStopwords(words, englishStopWords).join(' ');
     });
-    sentences = sentences.filter( (value) => { return value !== ''; } );
+    sentences = sentences.filter( (value) => {
+        return value !== '' && value.split(' ').length > 2; // remove empty and short sentences
+    } );
     return sentences;
 }
 
@@ -193,21 +223,41 @@ function compareTwoArticles(subjects) {
 /* LDA */
 function getLDA(text) {
     var sent = removeSW(text);
-    return lda(sent, 2, 3);
+    var alphaValue = null, betaValue = null;
+    return lda(sent, 1, 20, null, alphaValue, betaValue, null);
 }
 
-function getLDAForSubjects(subjects) {
+function printLDA(result) {
+    for (var i in result) {
+        var row = result[i];
+        console.log('Topic ' + (parseInt(i) + 1));
+
+        // For each term.
+        for (var j in row) {
+            var term = row[j];
+            console.log(term.term + ' (' + term.probability + '%)');
+        }
+
+        console.log('');
+    }
+}
+
+function getLDAForSubjects(subjects, print) {
     var ldas = [];
     return getArticle(subjects[0])
-        .then(wikiE.extractText)
         .then( (text) => {
             ldas[0] = getLDA(text);
+            if (print) {
+                printLDA(ldas[0]);
+            }
             return subjects[1];
         })
         .then(getArticle)
-        .then(wikiE.extractText)
         .then( (text) => {
             ldas[1] = getLDA(text);
+            if (print) {
+                printLDA(ldas[1]);
+            }
             return ldas;
         });
 }
@@ -235,10 +285,5 @@ var unrelatedSubjects = [
                 });
     });*/
 
-getLDAForSubjects(relatedSubjects)
-    .then( (ldas) => {
-        console.log(JSON.stringify(ldas));
-    });
-
-
+getLDAForSubjects(relatedSubjects, true);
 
