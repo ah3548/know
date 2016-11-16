@@ -41,7 +41,7 @@ function getArticleFromWiki(page) {
         params = {
             action: "parse",
             page: page,
-            prop: "text",
+            prop:  "text",
             format: 'json',
             redirects: true,
             noimages: true,
@@ -61,9 +61,42 @@ function getArticleFromWiki(page) {
         });
 }
 
-function getArticleFromFile(subject) {
+function getWikiSummary(page) {
+    var request = require('request-promise-native'),
+        urlparse = require('url'),
+        params = {
+            action: "query",
+            titles: page,
+            /*page: page,
+            prop:  "text",*/
+            format: 'json',
+            /*redirects: true,
+            noimages: true,
+            disabletoc: true,
+            disableeditsection: true,
+            disablelimitreport: true*/
+            prop: 'extracts',
+            exintro: '',
+            explaintext: '',
+            indexpageids: '',
+
+        },
+        url = "http://en.wikipedia.org/w/api.php" + urlparse.format({ query: params });
+    console.log(url);
+
+    return request({
+        uri: url,
+        json: true
+    }).then( (body) => {
+        var article = body.query.pages[body.query.pageids[0]].extract;
+        return article;
+    });
+
+}
+
+function getArticleFromFile(fileName, onlySummary) {
     return new Promise( (resolve, reject) => {
-        fs.readFile(subject + '.txt', 'utf8', (err, body) => {
+        fs.readFile(fileName, 'utf8', (err, body) => {
             resolve(body);
         });
     });
@@ -76,26 +109,41 @@ function sanitizeArticle(article) {
     return f.flattenItem(article);
 }
 
-function getArticle(subject) {
+function getExtension(onlySummary) {
+    return (onlySummary ? '-sum.txt' : '.txt');
+}
+function getArticle(subject, onlySummary) {
+    var fileName = subject + getExtension(onlySummary);
     return new Promise((resolve, reject) => {
-        fs.access(subject + '.txt', fs.constants.R_OK, (err) => {
+        fs.access(fileName, fs.constants.R_OK, (err) => {
             if (err) {
-                return articleToTextFile(subject).then(getArticleFromFile).then(resolve);
+                return articleToTextFile(subject, onlySummary).then(getArticleFromFile).then(resolve);
             }
             else {
-                return getArticleFromFile(subject).then(resolve);
+                return getArticleFromFile(subject, onlySummary).then(resolve);
             }
         })});
 }
 
-function articleToTextFile(subject) {
-    return getArticleFromWiki(subject)
-        .then(wikiE.removeReferences)
-        .then( (article) => {
-            var text = wikiE.extractText(article);
-            fs.writeFileSync(subject + '.txt', text);
-            return subject + '.txt';
-        })
+function articleToTextFile(subject, onlySummary) {
+    if (onlySummary) {
+        return getWikiSummary(subject)
+        //.then(wikiE.removeReferences)
+            .then( (article) => {
+                fs.writeFileSync(subject + getExtension(onlySummary), article);
+                return subject + getExtension(onlySummary);
+            })
+    }
+    else {
+        return getArticleFromWiki(subject)
+        //.then(wikiE.removeReferences)
+            .then( (article) => {
+                var text = wikiE.extractText(article);
+                fs.writeFileSync(subject + getExtension(onlySummary), text);
+                return subject + getExtension(onlySummary);
+            })
+    }
+
 }
 
 /* W2Vec */
@@ -198,10 +246,10 @@ function getMostSimilar(model, subject, num) {
 }
 
 /* W2V COMPARISON */
-function compareTwoArticles(subjects) {
+function compareTwoArticles(subjects, onlySummaryForFirst) {
     return new Promise((resolve, reject) => {
         var fName = 'corpus.txt';
-        articleToTextFile(subjects[0])
+        articleToTextFile(subjects[0], onlySummaryForFirst)
             .then((firstFileName) => {
                 articleToTextFile(subjects[1]).then((secondFileName) => {
                     concat([firstFileName, secondFileName], fName, runAlg);
@@ -277,13 +325,12 @@ var unrelatedSubjects = [
     'Algebra'
 ];
 
-/*compareTwoArticles(relatedSubjects) // 0.998
-    .then( () => {
+compareTwoArticles(relatedSubjects, true) // 0.998
+    /*.then( () => {
             compareTwoArticles(semiRelatedSubjects) // 0.183
                 .then ( () => {
                     compareTwoArticles(unrelatedSubjects); // -0.005
                 });
     });*/
 
-getLDAForSubjects(relatedSubjects, true);
-
+//getLDAForSubjects(relatedSubjects, true);
