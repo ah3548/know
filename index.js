@@ -7,7 +7,7 @@ var fs = require('fs'),
     sw = require('stopword'),
     w2v = require('word2vec'),
     concat = require('concat-files'),
-    lda = require('lda'),
+    lda = require('./nodelda'),
     moment = require('moment');
 
 var englishStopWords = require('stopword/lib/stopwords_en').words;
@@ -40,7 +40,7 @@ function getArticleFromWiki(page) {
         urlparse = require('url'),
         params = {
             action: "parse",
-            page: page,
+            page: page.replace(/[-]/g, '_'),
             prop:  "text",
             format: 'json',
             redirects: true,
@@ -66,7 +66,7 @@ function getWikiSummary(page) {
         urlparse = require('url'),
         params = {
             action: "query",
-            titles: page,
+            titles: page.replace(/[-]/g, '_'),
             /*page: page,
             prop:  "text",*/
             format: 'json',
@@ -94,7 +94,7 @@ function getWikiSummary(page) {
 
 }
 
-function getArticleFromFile(fileName, onlySummary) {
+function getArticleFromFile(fileName) {
     return new Promise( (resolve, reject) => {
         fs.readFile(fileName, 'utf8', (err, body) => {
             resolve(body);
@@ -109,18 +109,28 @@ function sanitizeArticle(article) {
     return f.flattenItem(article);
 }
 
-function getExtension(onlySummary) {
-    return (onlySummary ? '-sum.txt' : '.txt');
+function getWikiFilePath(onlySummary) {
+    var path = 'articles/';
+    if (onlySummary) {
+        path = 'summaries/';
+    }
+    return path;
 }
 function getArticle(subject, onlySummary) {
-    var fileName = subject + getExtension(onlySummary);
+    var fileName = getWikiFilePath(onlySummary) + subject;
     return new Promise((resolve, reject) => {
         fs.access(fileName, fs.constants.R_OK, (err) => {
             if (err) {
-                return articleToTextFile(subject, onlySummary).then(getArticleFromFile).then(resolve);
+                return articleToTextFile(subject, onlySummary)
+                        .then(getArticleFromFile)
+                        .catch((err) => {
+                                console.log(subject + ": " + err);
+                                resolve();
+                        })
+                        .then(resolve);
             }
             else {
-                return getArticleFromFile(subject, onlySummary).then(resolve);
+                return getArticleFromFile(getWikiFilePath(onlySummary) + subject).then(resolve);
             }
         })});
 }
@@ -130,17 +140,19 @@ function articleToTextFile(subject, onlySummary) {
         return getWikiSummary(subject)
         //.then(wikiE.removeReferences)
             .then( (article) => {
-                fs.writeFileSync(subject + getExtension(onlySummary), article);
-                return subject + getExtension(onlySummary);
+                var filePath = getWikiFilePath(onlySummary) + subject;
+                fs.writeFileSync( filePath, article);
+                return filePath;
             })
     }
     else {
         return getArticleFromWiki(subject)
         //.then(wikiE.removeReferences)
             .then( (article) => {
+                var filePath =  getWikiFilePath(onlySummary) + subject;
                 var text = wikiE.extractText(article);
-                fs.writeFileSync(subject + getExtension(onlySummary), text);
-                return subject + getExtension(onlySummary);
+                fs.writeFileSync(filePath, text);
+                return filePath;
             })
     }
 
@@ -169,7 +181,7 @@ function removeSW(text) {
             if (word.trim()) {
                 o[i] = word.trim();
             }
-            if (o[i] && (o[i].length <= 3 || obj[i].length > 50)) {
+            if (o[i] && (o[i].length <= 3 || o[i].length > 50)) {
                 o[i] = '';
             }
         });
@@ -185,7 +197,7 @@ function removeSW(text) {
 }
 
 function removeSWFromFile(inputFile) {
-    var output = "w2vStep1.txt";
+    var output = 'w2vfiles/step1.txt';
     return getArticleFromFile(inputFile)
         .then((text) => {
             text = removeSW(text).join(' ');
@@ -195,22 +207,22 @@ function removeSWFromFile(inputFile) {
 }
 
 function runWord2VecPhases(input) {
-    var output = "w2vStep2.txt";
+    var output = "step2.txt";
     return new Promise( function(resolve, reject) {
-            w2v.word2phrase(input, output, {}, () => {
-                resolve(output);
+            w2v.word2phrase(input, 'w2vfiles/' + output, {}, () => {
+                resolve('w2vfiles/' + output);
             });
         }
     );
 }
 
 function runWord2Vec(inputFileName,outputFileName) {
-    var input = "w2vStep2.txt", output = "w2vStep3.txt";
+    var input = 'w2vfiles/step2.txt', output = 'w2vfiles/step3.txt';
     if (inputFileName != null) {
-        input = './' + inputFileName;
+        input = inputFileName;
     }
     if (outputFileName != null) {
-        output = './' + outputFileName;
+        output = outputFileName;
     }
     return new Promise( function(resolve, reject) {
             w2v.word2vec(input, output, {}, () => {
@@ -221,9 +233,9 @@ function runWord2Vec(inputFileName,outputFileName) {
 }
 
 function getWord2VecModel(fileName) {
-    var input = "w2vStep3.txt";
+    var input = 'w2vfiles/step3.txt';
     if (fileName != null) {
-        input = './' + fileName;
+        input = fileName;
     }
     return new Promise( (resolve, reject) => {
         w2v.loadModel(input, (error,model) => {
@@ -236,7 +248,7 @@ function runW2VAndGetModel(inputFile, subject) {
     return removeSWFromFile(inputFile)
                 .then(runWord2VecPhases)
                 .then((inputFile) => {
-                    return runWord2Vec(inputFile, subject + '-w2v.txt');
+                    return runWord2Vec(inputFile, 'w2vfiles/' + subject + '-w2v.txt');
                 })
                 .then(getWord2VecModel);
 }
@@ -252,7 +264,7 @@ function compareTwoArticles(subjects, onlySummaryForFirst) {
         articleToTextFile(subjects[0], onlySummaryForFirst)
             .then((firstFileName) => {
                 articleToTextFile(subjects[1]).then((secondFileName) => {
-                    concat([firstFileName, secondFileName], fName, runAlg);
+                    concat([firstFileName, secondFileName], 'w2vfiles/' + fName, runAlg);
                 });
             });
 
@@ -269,10 +281,16 @@ function compareTwoArticles(subjects, onlySummaryForFirst) {
 
 
 /* LDA */
-function getLDA(text) {
+function getLDA(text, numTopics, numTerms) {
     var sent = removeSW(text);
     var alphaValue = null, betaValue = null;
-    return lda(sent, 1, 20, null, alphaValue, betaValue, null);
+    if (numTopics === undefined) {
+        numTopics = 1;
+    }
+    if (numTerms === undefined) {
+        numTerms = 5;
+    }
+    return lda(sent, numTopics, numTerms, null, alphaValue, betaValue, null);
 }
 
 function printLDA(result) {
@@ -288,6 +306,17 @@ function printLDA(result) {
 
         console.log('');
     }
+}
+
+function getTerms(result) {
+    var map = {};
+    for (var i in result) {
+        var row = result[i];
+        for (var j in row) {
+            map[row[j].term] = true;
+        }
+    }
+    return map;
 }
 
 function getLDAForSubjects(subjects, print) {
@@ -325,8 +354,43 @@ var unrelatedSubjects = [
     'Algebra'
 ];
 
-compareTwoArticles(relatedSubjects, true) // 0.998
-    /*.then( () => {
+
+// GET LDA for summmary
+var subject = relatedSubjects[0];
+var map = null;
+getArticle(subject, true)                        // GET SUMMARY
+    .then((article) => {                                    // CALCULATE LDA TOPICS
+            var result = getLDA(article, 5, 5);
+            printLDA(result);
+            map = getTerms(result);
+            var promises = [];
+            for (key in map) {
+                promises.push(getArticle(key));
+            }
+            return Promise.all(promises)
+                    .then( () => {
+                        return new Promise( (resolve, reject) => {
+                            var filePaths = Object.keys(map).map((value) => { return getWikiFilePath(false) + value; });
+                            concat(filePaths, 'w2vfiles/' + subject + '-corpus', resolve);
+                        })
+                    })
+                    .then( () => {
+                        return 'w2vfiles/' + subject + '-corpus';
+                    });
+    })
+    .then((fName) => {
+        return runW2VAndGetModel(fName, subject);
+    })
+    .then((model) => {
+        var similarities = {};
+        for (key in map) {
+            similarities[key] = model.similarity(subject, key);
+        }
+        console.log(similarities);
+    });
+
+/*compareTwoArticles(relatedSubjects, true) // 0.998
+   .then( () => {
             compareTwoArticles(semiRelatedSubjects) // 0.183
                 .then ( () => {
                     compareTwoArticles(unrelatedSubjects); // -0.005
