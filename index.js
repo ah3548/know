@@ -15,7 +15,9 @@ englishStopWords = englishStopWords.concat([
     'retrieved',
     'isbn',
     'archived',
-    'original'
+    'original',
+    'however',
+    'officially'
 ]);
 var months =  moment.months('MMMM').map((s) => { return String.prototype.toLowerCase.call(s)});
 englishStopWords = englishStopWords.concat( months );
@@ -97,7 +99,7 @@ function getWikiSummary(page) {
 function getArticleFromFile(fileName) {
     return new Promise( (resolve, reject) => {
         fs.readFile(fileName, 'utf8', (err, body) => {
-            resolve(body);
+            resolve(body.toLowerCase());
         });
     });
 
@@ -210,6 +212,16 @@ function runWord2VecPhases(input) {
     var output = "step2.txt";
     return new Promise( function(resolve, reject) {
             w2v.word2phrase(input, 'w2vfiles/' + output, {}, () => {
+                fs.readFile('w2vfiles/' + output, 'utf8', function (err,data) {
+                    if (err) {
+                        return console.log(err);
+                    }
+                    var result = data.toLowerCase();
+
+                    fs.writeFile('w2vfiles/' + output, result, 'utf8', function (err) {
+                        if (err) return console.log(err);
+                    });
+                });
                 resolve('w2vfiles/' + output);
             });
         }
@@ -375,16 +387,23 @@ getArticle(subject, true)                        // GET SUMMARY
                         })
                     })
                     .then( () => {
+
+                    })
+                    .then( () => {
                         return 'w2vfiles/' + subject + '-corpus';
                     });
     })
     .then((fName) => {
+        //return getWord2VecModel('w2vfiles/' + subject + '-w2v.txt');
         return runW2VAndGetModel(fName, subject);
     })
     .then((model) => {
         var similarities = {};
         for (key in map) {
-            similarities[key] = model.similarity(subject, key);
+            similarities[key] = model.similarity(subject.toLowerCase(), key);
+            if (similarities[key] == null) {
+                delete similarities[key];
+            }
         }
         console.log(similarities);
     });
