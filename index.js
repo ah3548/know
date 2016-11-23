@@ -211,7 +211,7 @@ function removeSWFromFile(inputFile) {
 function runWord2VecPhases(input) {
     var output = "step2.txt";
     return new Promise( function(resolve, reject) {
-            w2v.word2phrase(input, 'w2vfiles/' + output, {}, () => {
+            w2v.word2phrase(input, 'w2vfiles/' + output, {silent:true}, () => {
                 fs.readFile('w2vfiles/' + output, 'utf8', function (err,data) {
                     if (err) {
                         return console.log(err);
@@ -237,7 +237,7 @@ function runWord2Vec(inputFileName,outputFileName) {
         output = outputFileName;
     }
     return new Promise( function(resolve, reject) {
-            w2v.word2vec(input, output, {}, () => {
+            w2v.word2vec(input, output, {silent:true}, () => {
                 resolve(output);
             });
         }
@@ -320,12 +320,18 @@ function printLDA(result) {
     }
 }
 
-function getTerms(result) {
+function getTerms(result, subject) {
     var map = {};
     for (var i in result) {
-        var row = result[i];
+        var row = result[i], addToMap = false, localMap = {};
         for (var j in row) {
-            map[row[j].term] = true;
+            if (row[j].term === subject.toLowerCase()) {
+                addToMap = true;
+            }
+            localMap[row[j].term] = true;
+        }
+        if (addToMap) {
+            Object.assign(map, localMap);
         }
     }
     return map;
@@ -366,15 +372,14 @@ var unrelatedSubjects = [
     'Algebra'
 ];
 
-
 // GET LDA for summmary
 var subject = relatedSubjects[0];
 var map = null;
-getArticle(subject, true)                        // GET SUMMARY
+getArticle(subject, true)                                   // GET SUMMARY
     .then((article) => {                                    // CALCULATE LDA TOPICS
             var result = getLDA(article, 5, 5);
             printLDA(result);
-            map = getTerms(result);
+            map = getTerms(result, subject);
             var promises = [];
             for (key in map) {
                 promises.push(getArticle(key));
@@ -387,15 +392,12 @@ getArticle(subject, true)                        // GET SUMMARY
                         })
                     })
                     .then( () => {
-
-                    })
-                    .then( () => {
                         return 'w2vfiles/' + subject + '-corpus';
                     });
     })
     .then((fName) => {
-        //return getWord2VecModel('w2vfiles/' + subject + '-w2v.txt');
-        return runW2VAndGetModel(fName, subject);
+        return getWord2VecModel('w2vfiles/' + subject + '-w2v.txt');
+        //return runW2VAndGetModel(fName, subject);
     })
     .then((model) => {
         var similarities = {};
@@ -405,8 +407,31 @@ getArticle(subject, true)                        // GET SUMMARY
                 delete similarities[key];
             }
         }
-        console.log(similarities);
+        //console.log(similarities);
+        for (key in similarities) {
+            getArticleWithSubject(key).then( (result) => {
+                var related = getSentences(result.body)
+                    .filter((value) => {
+                        if (value.toLowerCase().includes(subject.toLowerCase())) {
+                            return true;
+                        }
+                    });
+
+                if (related && related.length > 0) {
+                    console.log(result.subject + ": " + related);
+                }
+            });
+        }
     });
+
+function getArticleWithSubject(subject) {
+    return getArticle(subject).then((body) => {
+        return {
+            body: body,
+            subject: subject
+        }
+    })
+}
 
 /*compareTwoArticles(relatedSubjects, true) // 0.998
    .then( () => {
