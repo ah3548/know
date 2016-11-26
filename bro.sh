@@ -1,0 +1,1 @@
+browserify -r fs:browserify-fs wnlookup.js -o bundle.js --verbose

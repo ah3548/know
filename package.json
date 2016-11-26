@@ -9,6 +9,8 @@
   "author": "",
   "license": "BSD-2-Clause",
   "dependencies": {
+    "browserify": "^13.1.1",
+    "browserify-fs": "^1.0.0",
     "cheerio": "~0.22.0",
     "concat-files": "^0.1.0",
     "fs": "0.0.1-security",

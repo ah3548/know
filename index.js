@@ -372,58 +372,6 @@ var unrelatedSubjects = [
     'Algebra'
 ];
 
-// GET LDA for summmary
-var subject = relatedSubjects[0];
-var map = null;
-getArticle(subject, true)                                   // GET SUMMARY
-    .then((article) => {                                    // CALCULATE LDA TOPICS
-            var result = getLDA(article, 5, 5);
-            printLDA(result);
-            map = getTerms(result, subject);
-            var promises = [];
-            for (key in map) {
-                promises.push(getArticle(key));
-            }
-            return Promise.all(promises)
-                    .then( () => {
-                        return new Promise( (resolve, reject) => {
-                            var filePaths = Object.keys(map).map((value) => { return getWikiFilePath(false) + value; });
-                            concat(filePaths, 'w2vfiles/' + subject + '-corpus', resolve);
-                        })
-                    })
-                    .then( () => {
-                        return 'w2vfiles/' + subject + '-corpus';
-                    });
-    })
-    .then((fName) => {
-        return getWord2VecModel('w2vfiles/' + subject + '-w2v.txt');
-        //return runW2VAndGetModel(fName, subject);
-    })
-    .then((model) => {
-        var similarities = {};
-        for (key in map) {
-            similarities[key] = model.similarity(subject.toLowerCase(), key);
-            if (similarities[key] == null) {
-                delete similarities[key];
-            }
-        }
-        //console.log(similarities);
-        for (key in similarities) {
-            getArticleWithSubject(key).then( (result) => {
-                var related = getSentences(result.body)
-                    .filter((value) => {
-                        if (value.toLowerCase().includes(subject.toLowerCase())) {
-                            return true;
-                        }
-                    });
-
-                if (related && related.length > 0) {
-                    console.log(result.subject + ": " + related);
-                }
-            });
-        }
-    });
-
 function getArticleWithSubject(subject) {
     return getArticle(subject).then((body) => {
         return {
@@ -432,6 +380,69 @@ function getArticleWithSubject(subject) {
         }
     })
 }
+
+function ledge () {
+    var subject = relatedSubjects[0];
+    var map = null;
+    return getArticle(subject, true)                                   // GET SUMMARY
+        .then((article) => {                                    // CALCULATE LDA TOPICS
+            var result = getLDA(article, 5, 5);
+            printLDA(result);
+            map = getTerms(result, subject);
+            var promises = [];
+            for (key in map) {
+                promises.push(getArticle(key));
+            }
+            return Promise.all(promises)
+                .then(() => {
+                    return new Promise((resolve, reject) => {
+                        var filePaths = Object.keys(map).map((value) => {
+                            return getWikiFilePath(false) + value;
+                        });
+                        concat(filePaths, 'w2vfiles/' + subject + '-corpus', resolve);
+                    })
+                })
+                .then(() => {
+                    return 'w2vfiles/' + subject + '-corpus';
+                });
+        })
+        .then((fName) => {
+            return getWord2VecModel('w2vfiles/' + subject + '-w2v.txt');
+            //return runW2VAndGetModel(fName, subject);
+        })
+        .then((model) => {
+            var similarities = {};
+            for (key in map) {
+                similarities[key] = model.similarity(subject.toLowerCase(), key);
+                if (similarities[key] == null) {
+                    delete similarities[key];
+                }
+            }
+            //console.log(similarities);
+            var promises = [];
+            for (key in similarities) {
+                var prom = getArticleWithSubject(key).then((result) => {
+                    var related = getSentences(result.body)
+                        .filter((value) => {
+                            if (value.toLowerCase().includes(subject.toLowerCase())) {
+                                return true;
+                            }
+                        });
+
+                    if (related && related.length > 0) {
+                        console.log(result.subject + ": " + related);
+                    }
+                    return related;
+                });
+                promises.push(prom);
+            }
+
+            return Promise.all(promises).then((values) => {
+                return values;
+            })
+        });
+}
+
 
 /*compareTwoArticles(relatedSubjects, true) // 0.998
    .then( () => {
@@ -442,3 +453,5 @@ function getArticleWithSubject(subject) {
     });*/
 
 //getLDAForSubjects(relatedSubjects, true);
+
+module.exports = { ledge };
