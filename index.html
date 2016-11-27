@@ -21,10 +21,31 @@
 </head>
 <body>
 
-<div id='content' class="container">
-    Please input your thesis:
-
-    <textarea class="form-control" rows="5" id="comment"></textarea>
+<div id='content' class="container" style="margin-top: 25px">
+    <form class="">
+        <div class="form-group row">
+            <label class="col-sm-1 col-form-label" for="subject">Subject:</label>
+            <div class="col-sm-11">
+                <input data-bind="value: subject" class="form-control" rows="1" id="subject"></input>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-1 col-form-label" for="thesis">Thesis:</label>
+            <div class="col-sm-11">
+                <textarea data-bind="value: thesis" class="form-control" rows="5" id="thesis"></textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="offset-sm-2 col-sm-10">
+                <input value="Submit" type="button" class="btn btn-primary" onclick="submitNewThesis()"></input>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                    <span class="sr-only">60% Complete</span>
+                </div>
+            </div>
+        </div>
+    </form>
 
     <h2 data-bind="text: subject"></h2>
     <ul class="list-group" data-bind="foreach: references" >
@@ -46,39 +67,62 @@
 <script>
     // Define a "Person" class that tracks its own name and children, and has a method to add a new child
     var Reference = function(name, sentences) {
-        this.name = name;
+        this.name = ko.observable(name);
         this.sentences = ko.observableArray(sentences);
     }
 
     // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
     var viewModel = {
         subject: 'Azerbaijan',
-        references: [],
-        showRenderTimes: ko.observable(false)
+        thesis: `Azerbaijan (/ˌæzərbaɪˈdʒɑːn/ AZ-ər-by-JAHN; Azerbaijani: Azərbaycan), officially the Republic of Azerbaijan (Azerbaijani: Azərbaycan Respublikası), is a country in the South Caucasus region, situated at the crossroads of Southwest Asia and Southeastern Europe. It is bounded by the Caspian Sea to the east, Russia to the north, Georgia to the northwest, Armenia to the west and Iran to the south. The exclave of Nakhchivan is bounded by Armenia to the north and east, Iran to the south and west, while having an 8 km border with Turkey in the north west.
+        The Azerbaijan Democratic Republic proclaimed its independence in 1918. The country was incorporated into the Soviet Union in 1920 as the Azerbaijan Soviet Socialist Republic. The modern Republic of Azerbaijan proclaimed its independence on 30 August 1991, prior to the official dissolution of the USSR in December 1991. In September 1991, the Armenian majority of the disputed Nagorno-Karabakh region seceded to form the Nagorno-Karabakh Republic. The region and seven adjacent districts outside it became de facto independent with the end of the Nagorno-Karabakh War in 1994. These regions are internationally recognized as part of Azerbaijan pending a solution to the status of the Nagorno-Karabakh, found through negotiations facilitated by the OSCE.
+        Azerbaijan is a unitary semi-presidential republic. The country is a member state of the Council of Europe, the OSCE and the NATO Partnership for Peace (PfP) program. It is one of six independent Turkic states, an active member of the Turkic Council and the TÜRKSOY community. Azerbaijan has diplomatic relations with 158 countries and holds membership in 38 international organizations. It is one of the founding members of GUAM, the Commonwealth of Independent States (CIS) and the Organization for the Prohibition of Chemical Weapons. A member of the United Nations since 1992, Azerbaijan was elected to membership in the newly established Human Rights Council by the United Nations General Assembly on 9 May 2006. Its term of office began on 19 June 2006. Azerbaijan is also a member state of the Non-Aligned Movement, holds observer status in World Trade Organization and is a correspondent at the International Telecommunication Union.
+        The Constitution of Azerbaijan does not declare an official religion and all major political forces in the country are secularist. However, the majority of the population consists of Shiite Muslims. Azerbaijan has a high level of human development which ranks on par with most Eastern European countries. It has a high rate of economic development and literacy, as well as a low rate of unemployment.
+        However, corruption in Azerbaijan is widespread, especially in the public service. The ruling party, the New Azerbaijan Party, has been accused of authoritarianism and human rights abuses.`,
+        references: ko.observableArray([])
+    };
+    ko.applyBindings(viewModel);
+
+    var url = 'http://localhost:3000';
+
+    var socket = new WebSocket('ws://localhost:1990');
+
+    socket.onopen = (e) => {
+        console.log('open');
+        socket.send(JSON.stringify(viewModel));
     };
 
+    socket.onmessage = (results) => {
+        processResponse(JSON.parse(results.data));
+    };
 
-    var url = 'http://localhost:3000'
-    axios.get(url)
-        .then(function (response) {
-            var references = [], subjects = [ viewModel.subject ];
-            response.data.forEach( function(value) {
-                if (value.sentences.length > 0) {
-                    viewModel.references.push(new Reference(value.subject,value.sentences));
-                    subjects.push(value.subject);
-                }
-            })
-            ko.applyBindings(viewModel);
-            var myHilitor = new Hilitor("content");
-            myHilitor.apply(subjects.join(' '));
-        })
-        .catch(function (error) {
-            console.log(error);
+    this.submitNewThesis = function () {
+        socket.send(JSON.stringify(viewModel));
+    }
+
+    function processResponse (response) {
+        var subjects = [ viewModel.subject ];
+
+        viewModel.references.removeAll();
+
+        response.forEach( function(value) {
+            if (value.sentences.length > 0) {
+                viewModel.references.push(new Reference(value.subject,value.sentences));
+                subjects.push(value.subject);
+            }
         });
 
 
 
-
+        var myHilitor = new Hilitor('content');
+        myHilitor.apply(subjects.join(' '));
+    }
+    /*
+    axios.get(url)
+        .then(processResponse)
+        .catch(function (error) {
+            console.log(error);
+        });*/
 
 </script>
 

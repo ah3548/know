@@ -3,12 +3,12 @@
  */
 var fs = require('fs'),
     cheerio = require('cheerio'),
-    wikiE = require('./wiki-extract'),
     sw = require('stopword'),
     w2v = require('word2vec'),
     concat = require('concat-files'),
     lda = require('./nodelda'),
-    moment = require('moment');
+    moment = require('moment'),
+    natural = require('natural');
 
 var englishStopWords = require('stopword/lib/stopwords_en').words;
 englishStopWords = englishStopWords.concat([
@@ -22,70 +22,24 @@ englishStopWords = englishStopWords.concat([
 var months =  moment.months('MMMM').map((s) => { return String.prototype.toLowerCase.call(s)});
 englishStopWords = englishStopWords.concat( months );
 
-var results = {
-    subject1: {
-        title: '',
-        lda: ''
-    },
-    subject2: {
-        title: '',
-        lda: ''
-    },
-    similarity: 0
-};
-
-var queries = []; // list of results
-
 /* WIKIPEDIA */
-function getArticleFromWiki(page) {
-    var request = require('request-promise-native'),
-        urlparse = require('url'),
-        params = {
-            action: "parse",
-            page: page.replace(/[-]/g, '_'),
-            prop:  "text",
-            format: 'json',
-            redirects: true,
-            noimages: true,
-            disabletoc: true,
-            disableeditsection: true,
-            disablelimitreport: true
-        },
-        url = "http://en.wikipedia.org/w/api.php" + urlparse.format({ query: params });
-        console.log(url);
-
-        return request({
-            uri: url,
-            json: true
-        }).then( (body) => {
-            var article = body.parse.text['*'];
-            return article;
-        });
-}
-
-function getWikiSummary(page) {
+function getWiki(page, onlySummary) {
     var request = require('request-promise-native'),
         urlparse = require('url'),
         params = {
             action: "query",
             titles: page.replace(/[-]/g, '_'),
-            /*page: page,
-            prop:  "text",*/
             format: 'json',
-            /*redirects: true,
-            noimages: true,
-            disabletoc: true,
-            disableeditsection: true,
-            disablelimitreport: true*/
             prop: 'extracts',
-            exintro: '',
             explaintext: '',
             indexpageids: '',
+            redirects: ''
 
-        },
-        url = "http://en.wikipedia.org/w/api.php" + urlparse.format({ query: params });
-    console.log(url);
-
+        };
+    if (onlySummary) {
+        params.exintro ='';
+    }
+    var url = "http://en.wikipedia.org/w/api.php" + urlparse.format({ query: params });
     return request({
         uri: url,
         json: true
@@ -93,7 +47,6 @@ function getWikiSummary(page) {
         var article = body.query.pages[body.query.pageids[0]].extract;
         return article;
     });
-
 }
 
 function getArticleFromFile(fileName) {
@@ -104,12 +57,6 @@ function getArticleFromFile(fileName) {
     });
 
 };
-
-function sanitizeArticle(article) {
-    var f = require('html-flatten/build/flatten-html');
-    f = new Flatten();
-    return f.flattenItem(article);
-}
 
 function getWikiFilePath(onlySummary) {
     var path = 'articles/';
@@ -138,26 +85,12 @@ function getArticle(subject, onlySummary) {
 }
 
 function articleToTextFile(subject, onlySummary) {
-    if (onlySummary) {
-        return getWikiSummary(subject)
-        //.then(wikiE.removeReferences)
-            .then( (article) => {
-                var filePath = getWikiFilePath(onlySummary) + subject;
-                fs.writeFileSync( filePath, article);
-                return filePath;
-            })
-    }
-    else {
-        return getArticleFromWiki(subject)
-        //.then(wikiE.removeReferences)
-            .then( (article) => {
-                var filePath =  getWikiFilePath(onlySummary) + subject;
-                var text = wikiE.extractText(article);
-                fs.writeFileSync(filePath, text);
-                return filePath;
-            })
-    }
-
+    return getWiki(subject, onlySummary)
+        .then( (article) => {
+            var filePath = getWikiFilePath(onlySummary) + subject;
+            fs.writeFileSync( filePath, article);
+            return filePath;
+        });
 }
 
 /* W2Vec */
@@ -357,6 +290,15 @@ function getLDAForSubjects(subjects, print) {
         });
 }
 
+/* TF-IDF */
+function getTFIDF(text, numTopics) {
+    var TfIdf = natural.TfIdf, tfidf = new TfIdf();
+    thesis = removeSW(text).join(' ');
+    tfidf.addDocument(thesis);
+    return tfidf.listTerms(0).splice(0,numTopics);
+}
+
+
 var relatedSubjects = [
     'Azerbaijan',
     'Russia'
@@ -381,34 +323,32 @@ function getArticleWithSubject(subject) {
     })
 }
 
-function ledge () {
-    var subject = relatedSubjects[0];
-    var map = null;
-    return getArticle(subject, true)                                   // GET SUMMARY
-        .then((article) => {                                    // CALCULATE LDA TOPICS
-            var result = getLDA(article, 5, 5);
-            printLDA(result);
-            map = getTerms(result, subject);
-            var promises = [];
-            for (key in map) {
-                promises.push(getArticle(key));
-            }
-            return Promise.all(promises)
-                .then(() => {
-                    return new Promise((resolve, reject) => {
-                        var filePaths = Object.keys(map).map((value) => {
-                            return getWikiFilePath(false) + value;
-                        });
-                        concat(filePaths, 'w2vfiles/' + subject + '-corpus', resolve);
-                    })
-                })
-                .then(() => {
-                    return 'w2vfiles/' + subject + '-corpus';
+function ledge (subject, thesis) {
+    getTFIDF(thesis, 20).forEach(function(item) {
+        console.log(item.term + ': ' + item.tfidf);
+    });
+
+    var map = null, promises = [], result = getLDA(thesis, 5, 5);
+    printLDA(result);
+    map = getTerms(result, subject);
+    for (key in map) {
+        promises.push(getArticle(key));
+    }
+    return Promise.all(promises)
+        .then(() => {
+            return new Promise((resolve, reject) => {
+                var filePaths = Object.keys(map).map((value) => {
+                    return getWikiFilePath(false) + value;
                 });
+                concat(filePaths, 'w2vfiles/' + subject + '-corpus', resolve);
+            })
+            .then(() => {
+                return 'w2vfiles/' + subject + '-corpus';
+            })
         })
         .then((fName) => {
-            return getWord2VecModel('w2vfiles/' + subject + '-w2v.txt');
-            //return runW2VAndGetModel(fName, subject);
+            //return getWord2VecModel('w2vfiles/' + subject + '-w2v.txt');
+            return runW2VAndGetModel(fName, subject);
         })
         .then((model) => {
             var similarities = {};
@@ -422,12 +362,15 @@ function ledge () {
             var promises = [];
             for (key in similarities) {
                 var prom = getArticleWithSubject(key).then((result) => {
-                    var related = getSentences(result.body)
-                        .filter((value) => {
+                    var sentences = getSentences(result.body);
+                    var related = [];
+                    if (sentences && sentences.length > 0) {
+                        related = sentences.filter((value) => {
                             if (value.toLowerCase().includes(subject.toLowerCase())) {
                                 return true;
                             }
                         });
+                    }
 
                     if (related && related.length > 0) {
                         console.log(result.subject + ": " + related);
@@ -457,4 +400,7 @@ function ledge () {
 
 //getLDAForSubjects(relatedSubjects, true);
 
-module.exports = { ledge };
+module.exports = {
+    articleToTextFile,
+    ledge
+};
