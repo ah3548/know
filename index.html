@@ -3,16 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="http://knockoutjs.com/downloads/knockout-3.2.0.js"></script>
+    <script src="http://www.the-art-of-web.com/hilitor.js"></script>
 </head>
 <body>
 
-<ul id="people" class="list-unstyled"></ul>
-<script src="bundle.js"></script>
+<div id='content' class="container">
+    Please input your thesis:
+
+    <textarea class="form-control" rows="5" id="comment"></textarea>
+
+    <h2 data-bind="text: subject"></h2>
+    <ul class="list-group" data-bind="foreach: references" >
+        <li class="list-group-item">
+            <div>
+                <label data-bind="text: name"> </label> has <span data-bind='text: sentences().length'>&nbsp;</span> references:
+            </span>
+            </div>
+            <ul data-bind="foreach: sentences">
+                <li>
+                    <label data-bind="text: $data"></label>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
 
 <script>
+    // Define a "Person" class that tracks its own name and children, and has a method to add a new child
+    var Reference = function(name, sentences) {
+        this.name = name;
+        this.sentences = ko.observableArray(sentences);
+    }
+
+    // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
+    var viewModel = {
+        subject: 'Azerbaijan',
+        references: [],
+        showRenderTimes: ko.observable(false)
+    };
+
+
+    var url = 'http://localhost:3000'
+    axios.get(url)
+        .then(function (response) {
+            var references = [], subjects = [ viewModel.subject ];
+            response.data.forEach( function(value) {
+                if (value.sentences.length > 0) {
+                    viewModel.references.push(new Reference(value.subject,value.sentences));
+                    subjects.push(value.subject);
+                }
+            })
+            ko.applyBindings(viewModel);
+            var myHilitor = new Hilitor("content");
+            myHilitor.apply(subjects.join(' '));
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
+
+
 
 </script>
+
 
 </body>
 </html>

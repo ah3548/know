@@ -432,7 +432,10 @@ function ledge () {
                     if (related && related.length > 0) {
                         console.log(result.subject + ": " + related);
                     }
-                    return related;
+                    return {
+                        subject: result.subject,
+                        sentences: related ? related : []
+                    };
                 });
                 promises.push(prom);
             }
