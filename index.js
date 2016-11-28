@@ -52,7 +52,7 @@ function getWiki(page, onlySummary) {
 function getArticleFromFile(fileName) {
     return new Promise( (resolve, reject) => {
         fs.readFile(fileName, 'utf8', (err, body) => {
-            resolve(body.toLowerCase());
+            resolve(body);
         });
     });
 
@@ -97,14 +97,17 @@ function articleToTextFile(subject, onlySummary) {
 
 function getSentences(text) {
     text = text.replace(/\r\n{1}/g, ' '); // remove windows newlines
-    text = text.replace(/\[\d\]/g, ' '); // remove references
+    text = text.replace(/[\n]/g,' '); // remove normal newlines
+    text = text.replace(/[=]+[^=]+[=]+/g, ''); // remove headers
+    text = text.replace(/[\s]{2,}/gi, ' '); // remove extra spaces
+
+    /*text = text.replace(/\[\d\]/g, ' '); // remove references
     text = text.replace(/[0-9]+\.[0-9]+|[0-9]+/g,' '); // remove numbers
     text = text.replace(/[`°•~@#$%^&*()|+\=;:",<>\{\}\[\]\\\/]/gi, ' '); // remove special characters
-    text = text.replace(/[\n]/g,' ');
-    text = text.replace(/[\s]{2,}/gi, ' '); // remove extra spaces
     text = text.replace(/Main articles|Main article/gi, '');
-    text = text.replace(/www/gi,'')
-    var documents = text.match( /[^\.!\?]+[\.!\?]+/g );
+    text = text.replace(/www/gi,'')*/
+    //var documents = text.match( /[^\.!\?]+[\.!\?]+/g );
+    var documents = text.match( /.*?(?:\.|!|\?)(?:(?= [A-Z0-9])|$)/g );
     return documents;
 }
 
@@ -293,7 +296,7 @@ function getLDAForSubjects(subjects, print) {
 /* TF-IDF */
 function getTFIDF(text, numTopics) {
     var TfIdf = natural.TfIdf, tfidf = new TfIdf();
-    thesis = removeSW(text).join(' ');
+    var thesis = removeSW(text).join(' ');
     tfidf.addDocument(thesis);
     return tfidf.listTerms(0).splice(0,numTopics);
 }
@@ -372,9 +375,9 @@ function ledge (subject, thesis) {
                         });
                     }
 
-                    if (related && related.length > 0) {
+                    /*if (related && related.length > 0) {
                         console.log(result.subject + ": " + related);
-                    }
+                    }*/
                     return {
                         subject: result.subject,
                         sentences: related ? related : []
@@ -402,5 +405,7 @@ function ledge (subject, thesis) {
 
 module.exports = {
     articleToTextFile,
+    getArticle,
+    getSentences,
     ledge
 };

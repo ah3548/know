@@ -1,4 +1,4 @@
-var expect    = require("chai").expect;
+var expect = require("chai").expect;
 var index = require("../index");
 
 describe("index", function() {
@@ -11,6 +11,15 @@ describe("index", function() {
                 .catch((err) => {
                     console.log(err);
                 });
+        });
+    });
+
+    describe.only("getArticle.getSentences", function() {
+        it("1991", function() {
+            return index.getArticle('1991')
+                .then( (article) => {
+                    console.log(index.getSentences(article));
+                })
         });
     });
 });
