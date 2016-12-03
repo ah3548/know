@@ -2,7 +2,7 @@ var expect = require("chai").expect;
 var index = require("../index");
 
 describe("index", function() {
-    describe("getArticleFromWiki", function() {
+    describe.only("getArticleFromWiki", function() {
         it("religious", function() {
             return index.articleToTextFile('religious', false)
                 .then((result) => {
@@ -14,7 +14,7 @@ describe("index", function() {
         });
     });
 
-    describe.only("getArticle.getSentences", function() {
+    describe("getArticle.getSentences", function() {
         it("1991", function() {
             return index.getArticle('1991')
                 .then( (article) => {

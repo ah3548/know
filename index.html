@@ -79,9 +79,9 @@
     };
     ko.applyBindings(viewModel);
 
-    var url = 'http://localhost:3000';
-
-    var socket = new WebSocket('ws://localhost:1990');
+    //var url = 'cs.nyu.edu:1990/~ah3548';
+    var url = 'linserv2.cims.nyu.edu:19909';
+    var socket = new WebSocket('ws://' + url);
 
     socket.onopen = (e) => {
         console.log('open');

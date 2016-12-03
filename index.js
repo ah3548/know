@@ -327,9 +327,9 @@ function getArticleWithSubject(subject) {
 }
 
 function ledge (subject, thesis) {
-    getTFIDF(thesis, 20).forEach(function(item) {
+    /*getTFIDF(thesis, 20).forEach(function(item) {
         console.log(item.term + ': ' + item.tfidf);
-    });
+    });*/
 
     var map = null, promises = [], result = getLDA(thesis, 5, 5);
     printLDA(result);

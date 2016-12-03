@@ -7,7 +7,7 @@ var express = require('express'),
     server = require('websocket').server,
     http = require('http');
 
-var app = express();
+/*var app = express();
 
 app.all('/', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -18,17 +18,15 @@ app.all('/', function(req, res, next) {
 app.get('/', function (req, res) {
 
     res.send(JSON.stringify(test));
-    /*know.ledge().then( (result) => {
-        res.send(result);
-    })*/
 });
 
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!')
-});
+});*/
 
 var socket = new server({
-    httpServer: http.createServer().listen(1990)
+    httpServer: http.createServer().listen(19909)
+   
 });
 
 var connection = null;
