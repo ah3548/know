@@ -8,7 +8,11 @@ var fs = require('fs'),
     concat = require('concat-files'),
     lda = require('./nodelda'),
     moment = require('moment'),
-    natural = require('natural');
+    natural = require('natural'),
+    winston = require('winston');
+
+winston.add(winston.transports.File, { filename: 'know.log' });
+winston.remove(winston.transports.Console);
 
 var englishStopWords = require('stopword/lib/stopwords_en').words;
 englishStopWords = englishStopWords.concat([
@@ -40,6 +44,7 @@ function getWiki(page, onlySummary) {
         params.exintro ='';
     }
     var url = "http://en.wikipedia.org/w/api.php" + urlparse.format({ query: params });
+    winston.info(url);
     return request({
         uri: url,
         json: true
@@ -73,7 +78,7 @@ function getArticle(subject, onlySummary) {
                 return articleToTextFile(subject, onlySummary)
                         .then(getArticleFromFile)
                         .catch((err) => {
-                                console.log(subject + ": " + err);
+                                winston.log('info',subject + ": " + err);
                                 resolve();
                         })
                         .then(resolve);
@@ -150,12 +155,12 @@ function runWord2VecPhases(input) {
             w2v.word2phrase(input, 'w2vfiles/' + output, {silent:true}, () => {
                 fs.readFile('w2vfiles/' + output, 'utf8', function (err,data) {
                     if (err) {
-                        return console.log(err);
+                        return winston.error(err);
                     }
                     var result = data.toLowerCase();
 
                     fs.writeFile('w2vfiles/' + output, result, 'utf8', function (err) {
-                        if (err) return console.log(err);
+                        if (err) return winston.error(err);
                     });
                 });
                 resolve('w2vfiles/' + output);
@@ -220,7 +225,7 @@ function compareTwoArticles(subjects, onlySummaryForFirst) {
             return runW2VAndGetModel(fName, subjects[0])
                 .then((model) => {
                     var result = model.similarity(subjects[0], subjects[1])
-                    console.log(result);
+                    winston.error(result);
                     resolve();
                 });
         }
@@ -244,15 +249,15 @@ function getLDA(text, numTopics, numTerms) {
 function printLDA(result) {
     for (var i in result) {
         var row = result[i];
-        console.log('Topic ' + (parseInt(i) + 1));
+        winston.info('Topic ' + (parseInt(i) + 1));
 
         // For each term.
         for (var j in row) {
             var term = row[j];
-            console.log(term.term + ' (' + term.probability + '%)');
+            winston.info(term.term + ' (' + term.probability + '%)');
         }
 
-        console.log('');
+        winston.info('');
     }
 }
 
@@ -361,7 +366,7 @@ function ledge (subject, thesis) {
                     delete similarities[key];
                 }
             }
-            //console.log(similarities);
+            winston.info(similarities);
             var promises = [];
             for (key in similarities) {
                 var prom = getArticleWithSubject(key).then((result) => {

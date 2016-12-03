@@ -5,7 +5,11 @@ var express = require('express'),
     wordnet = require('wordnet'),
     know = require('./index'),
     server = require('websocket').server,
-    http = require('http');
+    http = require('http'),
+    winston = require('winston');
+
+winston.add(winston.transports.File, { filename: 'know.log' });
+winston.remove(winston.transports.Console);
 
 /*var app = express();
 
@@ -34,7 +38,7 @@ socket.on('request', function(request) {
     connection = request.accept(null, request.origin);
     connection.on('message', function(message) {
         message = JSON.parse(message.utf8Data);
-        console.log(message.subject + ": " + message.thesis);
+        winston.log("info", message.subject + ": " + message.thesis);
         know.ledge(message.subject, message.thesis)
             .then( (result) => {
                     connection.send(JSON.stringify(result));
