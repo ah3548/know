@@ -11,3 +11,38 @@
 5. Repeat 1-3 stack overflow
 6. Enhance results with data gathered from opencyc
 
+/* 
+- Instructions for installing bash on your windows machine 
+http://www.windowscentral.com/how-install-bash-shell-command-line-windows-10
+- Git Tutorial
+https://www.atlassian.com/git/tutorials/what-is-version-control
+- Word2 Vec
+https://en.wikipedia.org/wiki/Word2vec
+*/
+
+/* ssh into the linux proxy server */
+
+ssh <nyu_id>@access.cim.nyu.edu
+
+/* ssh into the hosting server */
+
+ssh linserv2
+
+/* Clone the project to your local directory (i.e. for example the server) */
+
+git clone https://github.com/ah3548/know.git
+
+/* 
+Change to project directory
+On linserv2 @ ~/public_html/know
+*/
+
+cd know
+
+/* To run the server side code, will also host your web application */
+
+node server 
+
+/* view last 50 lines in log file */
+
+watch tail -n 50 know-server.log
