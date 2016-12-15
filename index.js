@@ -9,10 +9,8 @@ var fs = require('fs'),
     lda = require('./nodelda'),
     moment = require('moment'),
     natural = require('natural'),
-    winston = require('winston');
-
-winston.add(winston.transports.File, { filename: 'know.log' });
-winston.remove(winston.transports.Console);
+    winston = require('winston'),
+    combinatorics = require('js-combinatorics');
 
 var englishStopWords = require('stopword/lib/stopwords_en').words;
 englishStopWords = englishStopWords.concat([
@@ -93,7 +91,12 @@ function articleToTextFile(subject, onlySummary) {
     return getWiki(subject, onlySummary)
         .then( (article) => {
             var filePath = getWikiFilePath(onlySummary) + subject;
-            fs.writeFileSync( filePath, article);
+            if (article) {
+                fs.writeFileSync(filePath, article + '\n');
+            }
+            else {
+                fs.writeFileSync(filePath, '');
+            }
             return filePath;
         });
 }
@@ -105,6 +108,7 @@ function getSentences(text) {
     text = text.replace(/[\n]/g,' '); // remove normal newlines
     text = text.replace(/[=]+[^=]+[=]+/g, ''); // remove headers
     text = text.replace(/[\s]{2,}/gi, ' '); // remove extra spaces
+    text = text.replace(/[()]/gi, ''); // remove special characters
 
     /*text = text.replace(/\[\d\]/g, ' '); // remove references
     text = text.replace(/[0-9]+\.[0-9]+|[0-9]+/g,' '); // remove numbers
@@ -124,7 +128,7 @@ function removeSW(text) {
             if (word.trim()) {
                 o[i] = word.trim();
             }
-            if (o[i] && (o[i].length <= 3 || o[i].length > 50)) {
+            if (o[i] && (o[i].length < 3 || o[i].length > 50)) {
                 o[i] = '';
             }
         });
@@ -152,19 +156,29 @@ function removeSWFromFile(inputFile) {
 function runWord2VecPhases(input) {
     var output = "step2.txt";
     return new Promise( function(resolve, reject) {
-            w2v.word2phrase(input, 'w2vfiles/' + output, {silent:true}, () => {
-                fs.readFile('w2vfiles/' + output, 'utf8', function (err,data) {
-                    if (err) {
-                        return winston.error(err);
-                    }
-                    var result = data.toLowerCase();
+            try {
+                w2v.word2phrase(input, 'w2vfiles/' + output, {silent: true}, () => {
+                    fs.readFile('w2vfiles/' + output, 'utf8', function (err, data) {
+                        if (err) {
+                            winston.error(err);
+                            reject(err);
+                        }
+                        var result = data.toLowerCase();
 
-                    fs.writeFile('w2vfiles/' + output, result, 'utf8', function (err) {
-                        if (err) return winston.error(err);
+                        fs.writeFile('w2vfiles/' + output, result, 'utf8', function (err) {
+                            if (err) {
+                                winston.error(err);
+                                reject(err);
+                            }
+                            resolve('w2vfiles/' + output);
+                        });
                     });
                 });
-                resolve('w2vfiles/' + output);
-            });
+            }
+            catch (err) {
+                winston.error(err);
+                reject(err);
+            }
         }
     );
 }
@@ -197,11 +211,11 @@ function getWord2VecModel(fileName) {
     });
 };
 
-function runW2VAndGetModel(inputFile, subject) {
+function runW2VAndGetModel(inputFile) {
     return removeSWFromFile(inputFile)
                 .then(runWord2VecPhases)
                 .then((inputFile) => {
-                    return runWord2Vec(inputFile, 'w2vfiles/' + subject + '-w2v.txt');
+                    return runWord2Vec(inputFile, 'w2vfiles/' + inputFile + '-w2v.txt');
                 })
                 .then(getWord2VecModel);
 }
@@ -261,18 +275,34 @@ function printLDA(result) {
     }
 }
 
-function getTerms(result, subject) {
+/*function getTerms(result, subject, subjects) {
     var map = {};
     for (var i in result) {
         var row = result[i], addToMap = false, localMap = {};
         for (var j in row) {
-            if (row[j].term === subject.toLowerCase()) {
+            if (subject.toLowerCase().includes(row[j].term)) {
                 addToMap = true;
             }
             localMap[row[j].term] = true;
         }
         if (addToMap) {
             Object.assign(map, localMap);
+        }
+    }
+    if (subjects) {
+        subjects.forEach((value) => {
+            map[value] = true;
+        });
+    }
+    return map;
+}*/
+
+function getLDASubjects(result) {
+    var map = {};
+    for (var i in result) {
+        var row = result[i], addToMap = false, localMap = {};
+        for (var j in row) {
+            map[row[j].term] = true;
         }
     }
     return map;
@@ -306,22 +336,6 @@ function getTFIDF(text, numTopics) {
     return tfidf.listTerms(0).splice(0,numTopics);
 }
 
-
-var relatedSubjects = [
-    'Azerbaijan',
-    'Russia'
-];
-
-var semiRelatedSubjects = [
-    'Azerbaijan',
-    'Baku'
-];
-
-var unrelatedSubjects = [
-    'Azerbaijan',
-    'Algebra'
-];
-
 function getArticleWithSubject(subject) {
     return getArticle(subject).then((body) => {
         return {
@@ -331,72 +345,21 @@ function getArticleWithSubject(subject) {
     })
 }
 
-function ledge (subject, thesis) {
-    /*getTFIDF(thesis, 20).forEach(function(item) {
-        console.log(item.term + ': ' + item.tfidf);
-    });*/
-
-    var map = null, promises = [], result = getLDA(thesis, 5, 5);
-    printLDA(result);
-    map = getTerms(result, subject);
-    for (key in map) {
-        promises.push(getArticle(key));
+function getSubjects(subject) {
+    var subjects = [];
+    subjects.push(subject);
+    if (subject.indexOf(' ') != -1) {
+        subjects[0] = subjects[0].replace(/\s/g, '_');
+        var singleTerms = subject.split(' ');
+        subjects = subjects.concat(singleTerms);
+        var two = combinatorics.combination(singleTerms, 2).toArray();
+        two.forEach((value) => {
+            subjects = subjects.concat(value.join('_'));
+        })
     }
-    return Promise.all(promises)
-        .then(() => {
-            return new Promise((resolve, reject) => {
-                var filePaths = Object.keys(map).map((value) => {
-                    return getWikiFilePath(false) + value;
-                });
-                concat(filePaths, 'w2vfiles/' + subject + '-corpus', resolve);
-            })
-            .then(() => {
-                return 'w2vfiles/' + subject + '-corpus';
-            })
-        })
-        .then((fName) => {
-            //return getWord2VecModel('w2vfiles/' + subject + '-w2v.txt');
-            return runW2VAndGetModel(fName, subject);
-        })
-        .then((model) => {
-            var similarities = {};
-            for (key in map) {
-                similarities[key] = model.similarity(subject.toLowerCase(), key);
-                if (similarities[key] == null) {
-                    delete similarities[key];
-                }
-            }
-            winston.info(similarities);
-            var promises = [];
-            for (key in similarities) {
-                var prom = getArticleWithSubject(key).then((result) => {
-                    var sentences = getSentences(result.body);
-                    var related = [];
-                    if (sentences && sentences.length > 0) {
-                        related = sentences.filter((value) => {
-                            if (value.toLowerCase().includes(subject.toLowerCase())) {
-                                return true;
-                            }
-                        });
-                    }
 
-                    /*if (related && related.length > 0) {
-                        console.log(result.subject + ": " + related);
-                    }*/
-                    return {
-                        subject: result.subject,
-                        sentences: related ? related : []
-                    };
-                });
-                promises.push(prom);
-            }
-
-            return Promise.all(promises).then((values) => {
-                return values;
-            })
-        });
+    return subjects;
 }
-
 
 /*compareTwoArticles(relatedSubjects, true) // 0.998
    .then( () => {
@@ -412,5 +375,23 @@ module.exports = {
     articleToTextFile,
     getArticle,
     getSentences,
-    ledge
+    getLDA,
+    getLDASubjects,
+    runW2VAndGetModel,
+    getArticleWithSubject
 };
+
+/*var subject = 'Irish Civil War';
+var thesis = 'The civil war was waged between two opposing groups, Irish republicans and Irish nationalists, over the Anglo-Irish Treaty. The forces of the Provisional Government (which became the Free State in December 1922) supported the Treaty, while the Republican opposition saw it as a betrayal of the Irish Republic (which had been proclaimed during the Easter Rising). Many of those who fought in the conflict had been members of the Irish Republican Army (IRA) during the War of Independence.';
+ledge(subject, thesis)
+    .then((result) => {
+        console.log(result);
+    })
+    .catch((err) => {
+        console.log(err);
+    });*/
+
+/*getArticleFromFile('w2vfiles/Irish Civil War-corpus').then( (article) => {
+        console.log(removeSW(article));
+    }
+)*/

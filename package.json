@@ -17,6 +17,7 @@
     "fs": "0.0.1-security",
     "html-flatten": "^0.3.6",
     "html-to-text": "^2.1.3",
+    "js-combinatorics": "^0.5.2",
     "lda": "^0.1.9",
     "mocha": "^3.2.0",
     "moment": "^2.16.0",
