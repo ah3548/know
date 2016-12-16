@@ -23,12 +23,12 @@
 
 <div id='content' class="container" style="margin-top: 25px">
     <form class="">
-        <div class="form-group row">
+       <!-- <div class="form-group row">
             <label class="col-sm-1 col-form-label" for="subject">Subject:</label>
             <div class="col-sm-11">
                 <input data-bind="value: subject" class="form-control" rows="1" id="subject"></input>
             </div>
-        </div>
+        </div>-->
         <div class="form-group row">
             <label class="col-sm-1 col-form-label" for="thesis">Thesis:</label>
             <div class="col-sm-11">
@@ -39,16 +39,32 @@
             <div class="offset-sm-2 col-sm-10">
                 <input value="Submit" type="button" class="btn btn-primary" onclick="submitNewThesis()"></input>
             </div>
-            <div class="progress">
+            <!--<div class="progress">
                 <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
                     <span class="sr-only">60% Complete</span>
                 </div>
-            </div>
+            </div>-->
         </div>
     </form>
 
-    <h2 data-bind="text: subject"></h2>
-    <ul class="list-group" data-bind="foreach: references" >
+    <!--<h2 data-bind="text: subject"></h2>-->
+    <div class="row" data-bind="foreach: topics">
+        <div class="col-md-3">
+            Topic <span data-bind="text: $index"> </span>:
+            <div data-bind="foreach: $data">
+                <div class="checkbox">
+                    <input type="checkbox">
+                    <label data-bind="text: term"></label>
+                    <label data-bind="text: probability"></label>
+                    </input>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <ul class="list-group col-md-12" data-bind="foreach: references" >
         <li class="list-group-item">
             <div>
                 <label data-bind="text: name"> </label> has <span data-bind='text: sentences().length'>&nbsp;</span> references:
@@ -71,16 +87,22 @@
         this.sentences = ko.observableArray(sentences);
     }
 
+    var LDATerm = function (term, probability) {
+        this.term = ko.observable(term);
+        this.probability = ko.observable('('+probability+')');
+    }
+
     // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
     var viewModel = {
         subject: 'Azerbaijan',
         thesis: 'The thesis will analyze the involvement and role of the EU in the conflict in Nagorno-Karabakh. It will begin with a summary of the history of the conflict, noting that the Nagorno-Karabakh conflict has its own special historical background. The South Caucasus, including the territory of Azerbaijan and Nagorno-Karabakh as integral parts, has been through ethnic and demographic change due to the process of the disintegration of the USSR, followed by ethnic conflicts in the country akin to civil war, and finally the beginnings of territorial problems associated with its status as a post-Soviet state. All of these influences have affected the demography and geopolitics of the wider region. However, these problems did not come from nowhere and they have a historical background, for example the conflict between Armenia and Azerbaijan that emerged after territorial claims by Armenia on the territory of Nagorno-Karabakh.',
-        references: ko.observableArray([])
+        references: ko.observableArray([]),
+        topics: ko.observableArray([])
     };
     ko.applyBindings(viewModel);
 
-    //var url = 'cs.nyu.edu:1990/~ah3548';
-    var url = 'linserv2.cims.nyu.edu:19909';
+    var url = 'localhost:19909';
+    //var url = 'linserv2.cims.nyu.edu:19909';
     var socket = new WebSocket('ws://' + url);
 
     socket.onopen = (e) => {
@@ -89,11 +111,36 @@
     };
 
     socket.onmessage = (results) => {
-        processResponse(JSON.parse(results.data));
+        var mess = JSON.parse(results.data),
+            type = mess.type,
+            data = mess[type];
+        switch(type) {
+            case 'values': processResponse(data);
+            break;
+            case 'LDA': displayLDA(data);
+                break;
+            case 'graph': displaySimilarities(data);
+                break;
+        }
     };
 
     this.submitNewThesis = function () {
         socket.send(JSON.stringify(viewModel));
+    }
+
+    this.displayLDA = function (data) {
+        viewModel.topics.removeAll();
+        data.forEach(function(topic) {
+            var topicSet = [];
+            topic.forEach(function(term) {
+                topicSet.push(new LDATerm(term.term, term.probability));
+            })
+            viewModel.topics.push(topicSet);
+        })
+    }
+
+    this.displaySimilarities = function (data) {
+
     }
 
     function processResponse (response) {
@@ -102,24 +149,15 @@
         viewModel.references.removeAll();
 
         response.forEach( function(value) {
-            if (value.sentences.length > 0) {
+            if (value && value.sentences && value.sentences.length > 0) {
                 viewModel.references.push(new Reference(value.subject,value.sentences));
                 subjects.push(value.subject);
             }
         });
 
-
-
         var myHilitor = new Hilitor('content');
         myHilitor.apply(subjects.join(' '));
     }
-    /*
-    axios.get(url)
-        .then(processResponse)
-        .catch(function (error) {
-            console.log(error);
-        });*/
-
 </script>
 
 

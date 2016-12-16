@@ -215,7 +215,7 @@ function runW2VAndGetModel(inputFile) {
     return removeSWFromFile(inputFile)
                 .then(runWord2VecPhases)
                 .then((inputFile) => {
-                    return runWord2Vec(inputFile, 'w2vfiles/' + inputFile + '-w2v.txt');
+                    return runWord2Vec(inputFile, inputFile + '-w2v.txt');
                 })
                 .then(getWord2VecModel);
 }
@@ -257,7 +257,25 @@ function getLDA(text, numTopics, numTerms) {
     if (numTerms === undefined) {
         numTerms = 5;
     }
-    return lda(sent, numTopics, numTerms, null, alphaValue, betaValue, null);
+    return result = lda(sent, numTopics, numTerms, null, alphaValue, betaValue, null);
+}
+
+function getLDATopics(result) {
+    var LDA = [];
+    for (var i in result) {
+        var row = result[i];
+        LDA.push([]);
+
+        // For each term.
+        for (var j in row) {
+            var term = row[j];
+            LDA[LDA.length-1].push({
+                term: term.term,
+                probability: term.probability + '%'
+            })
+        }
+    }
+    return LDA;
 }
 
 function printLDA(result) {
@@ -361,6 +379,10 @@ function getSubjects(subject) {
     return subjects;
 }
 
+function getCombinations(keys) {
+    return combinatorics.combination(keys,2);
+}
+
 /*compareTwoArticles(relatedSubjects, true) // 0.998
    .then( () => {
             compareTwoArticles(semiRelatedSubjects) // 0.183
@@ -376,9 +398,12 @@ module.exports = {
     getArticle,
     getSentences,
     getLDA,
+    getLDATopics,
     getLDASubjects,
+    getWord2VecModel,
     runW2VAndGetModel,
-    getArticleWithSubject
+    getArticleWithSubject,
+    getCombinations
 };
 
 /*var subject = 'Irish Civil War';

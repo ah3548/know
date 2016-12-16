@@ -1,13 +1,16 @@
 var wordnet = require('wordnet'),
+    express = require('express'),
     know = require('./index'),
     server = require('websocket').server,
     http = require('http'),
-    winston = require('winston');
+    winston = require('winston'),
+    concat = require('concat-files');
 
 winston.add(winston.transports.File, { filename: 'know.log' });
 winston.remove(winston.transports.Console);
 
-/*var app = express();
+var app = express();
+app.use(express.static('./'))
 
 app.all('/', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -15,25 +18,23 @@ app.all('/', function(req, res, next) {
     next();
 });
 
-app.get('/', function (req, res) {
-
-    res.send(JSON.stringify(test));
-});
-
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!')
-});*/
+});
 
 
 function ledge (thesis, connection) {
-    var map = null, promises = [], result = know.getLDA(thesis, 5, 5);
+    var subject = 'Unknown', map = null, promises = [], result = know.getLDA(thesis, 4, 5);
+    connection.send(JSON.stringify({
+        type: 'LDA',
+        LDA: know.getLDATopics(result)
+    }));
     map = know.getLDASubjects(result);
-    var subject = 'Unknown';
     for (var key in map) {
         promises.push(know.getArticle(key));
     }
     return Promise.all(promises)
-        .then(() => {
+        .then(() => { // Generate Corpus
             return new Promise((resolve, reject) => {
                 var filePaths = Object.keys(map).map((value) => {
                     return 'articles/' + value;
@@ -48,42 +49,56 @@ function ledge (thesis, connection) {
             return know.runW2VAndGetModel(fName);
         })
         .then((model) => {
-            var similarities = {};
-            for (var key1 in map) {
-                for (var key2 in map) {
-                    if (key1 != key2) {
-                        var sim = model.similarity(key1, key2);
-                        if (sim && similarities[key1]) {
-                            if (sim > similarities[key1]) {
-                                similarities[key1] = sim;
-                            }
-                        }
-                        else {
-                            if (sim) {
-                                similarities[key1] = sim;
-                            }
-                        }
-                    }
-                }
-                if (similarities[key1] == null) {
-                    delete similarities[key1];
-                }
-            }
-            connection.send({
-                'type': 'similarities',
-                'similarities': similarities
+            var keys = Object.keys(map);
+            var combOfKeys = know.getCombinations(keys);
+            var graph = [];
+            combOfKeys.forEach((myKeys) => {
+                graph.push({
+                    node1: myKeys[0],
+                    node2: myKeys[1],
+                    sim: model.similarity(myKeys[0],myKeys[1])
+                })
             });
+            graph = graph.filter( (obj) => {
+                if (obj.sim && obj.sim > 0) {
+                    return true;
+                }
+                return false;
+            })
+            graph = graph.sort( (obj1, obj2) => {
+                if (obj1.sim < obj2.sim) {
+                    return -1;
+                }
+                else if (obj1.sim > obj2.sim) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            });
+            connection.send(JSON.stringify({
+                'type': 'graph',
+                'graph': graph
+            }));
             var promises = [];
-            for (var key in similarities) {
+            for (var key in map) {
                 var prom = know.getArticleWithSubject(key).then((result) => {
                     if (result.body) {
                         var sentences = know.getSentences(result.body);
                         var related = [];
                         if (sentences && sentences.length > 0) {
                             related = sentences.filter((value) => {
-                                if (value.toLowerCase().includes(subject.toLowerCase())) {
+                                var count = 0;
+                                graph.forEach((obj) => {
+                                    if (value.toLowerCase().includes(obj.node1) &&
+                                        value.toLowerCase().includes(obj.node2)) {
+                                        count++;
+                                    }
+                                });
+                                if (count > 0) {
                                     return true;
                                 }
+                                return false;
                             });
                         }
                         return {
@@ -96,10 +111,10 @@ function ledge (thesis, connection) {
             }
 
             return Promise.all(promises).then((values) => {
-                connection.send({
+                connection.send(JSON.stringify({
                     type: 'values',
                     values: values
-                });
+                }));
             })
         });
 }
