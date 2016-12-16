@@ -11,6 +11,7 @@
 5. Repeat 1-3 stack overflow
 6. Enhance results with data gathered from opencyc
 
+
 /* 
 - Instructions for installing bash on your windows machine 
 http://www.windowscentral.com/how-install-bash-shell-command-line-windows-10
@@ -38,6 +39,9 @@ On linserv2 @ ~/public_html/know
 */
 
 cd know
+
+/* Install All Dependencies */
+npm install
 
 /* To run the server side code, will also host your web application */
 
