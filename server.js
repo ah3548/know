@@ -1,6 +1,6 @@
 var wordnet = require('wordnet'),
     express = require('express'),
-    know = require('./index'),
+    know = require('./index'), // This file contains all custom functions (i.e. LDA, word2vec, etc)
     server = require('websocket').server,
     http = require('http'),
     winston = require('winston'),
@@ -24,17 +24,33 @@ app.listen(3000, function () {
 
 
 function ledge (thesis, connection) {
+    /*
+    know.getLDA returns the results of LDA.
+    Here you can substitute any sort of function to do analysis.
+     */
     var subject = 'Unknown', map = null, promises = [], result = know.getLDA(thesis, 4, 5);
     connection.send(JSON.stringify({
         type: 'LDA',
         LDA: know.getLDATopics(result)
     }));
+    /*
+    This function returns the list of subjects to analyze.
+    Here you can substitute any map (list of unique properties) to do analysis on.
+     */
     map = know.getLDASubjects(result);
     for (var key in map) {
+        /*
+        know.getArticle returns a promise that one can wait to resolve.
+        When the promise resolves you either have gotten the article from wikipedia or cached version on the filesystem.
+        Here you can substitute any data source request, and write the data to a file for further analysis.
+         */
         promises.push(know.getArticle(key));
     }
     return Promise.all(promises)
-        .then(() => { // Generate Corpus
+        .then(() => {
+        /*
+        This block of code generates the corpus to analyze by aggregating all files fetched by your data source requests.
+         */
             return new Promise((resolve, reject) => {
                 var filePaths = Object.keys(map).map((value) => {
                     return 'articles/' + value;
@@ -46,9 +62,20 @@ function ledge (thesis, connection) {
             })
         })
         .then((fName) => {
+        /*
+        This function takes the filename generated from the last part and runs word2vec to generate a model to query against.
+         */
             return know.runW2VAndGetModel(fName);
         })
         .then((model) => {
+        /*
+        This block is to use the results from the Word2Vec Analysis to limit the data being returned to the website.
+        Steps
+        1. For each pair of keys returned from LDA make a list of combinations
+        2. For each combination get a similarity score
+        3. Filter the list for only positive similarities
+        4. Sort the list with highest similarity in the beginning
+         */
             var keys = Object.keys(map);
             var combOfKeys = know.getCombinations(keys);
             var graph = [];
@@ -82,6 +109,10 @@ function ledge (thesis, connection) {
             }));
             var promises = [];
             for (var key in map) {
+                /*
+                This block takes the original article and filters the text for sentences containing terms with high similarity.
+                Here you can substitute your own filtering technique of the original corpus.
+                 */
                 var prom = know.getArticleWithSubject(key).then((result) => {
                     if (result.body) {
                         var sentences = know.getSentences(result.body);
@@ -132,12 +163,12 @@ socket.on('request', function(request) {
         console.log(messageObj);
         console.log("info", messageObj.subject + ": " + messageObj.thesis);
         connection.send(JSON.stringify(messageObj.subject));
+
+        /*
+        This is the main function. You can substitute your own function that uses the connection to send data.
+         */
         ledge(messageObj.thesis, connection);
-        /*know.ledge(message.subject, message.thesis)
-            .then( (result) => {
-                    connection.send(JSON.stringify(result));
-                }
-            );*/
+
     });
 });
 

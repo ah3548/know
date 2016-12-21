@@ -52,18 +52,16 @@
         <div class="col-md-3">
             Topic <span data-bind="text: $index"> </span>:
             <div data-bind="foreach: $data">
-                <div class="checkbox">
-                    <input type="checkbox">
+                <div>
                     <label data-bind="text: term"></label>
                     <label data-bind="text: probability"></label>
-                    </input>
                 </div>
             </div>
         </div>
 
     </div>
 
-
+    <button onclick="download()" class="btn pull-right glyphicon glyphicon-download-alt" aria-hidden="true"></button>
     <ul class="list-group col-md-12" data-bind="foreach: references" >
         <li class="list-group-item">
             <div>
@@ -81,6 +79,20 @@
 
 
 <script>
+    function download() {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' +
+            encodeURI(data));
+        element.setAttribute('download', 'data.txt');
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+
     // Define a "Person" class that tracks its own name and children, and has a method to add a new child
     var Reference = function(name, sentences) {
         this.name = ko.observable(name);
@@ -100,6 +112,8 @@
         topics: ko.observableArray([])
     };
     ko.applyBindings(viewModel);
+
+    var data = '';
 
     var url = 'localhost:19909';
     //var url = 'linserv2.cims.nyu.edu:19909';
@@ -152,11 +166,18 @@
             if (value && value.sentences && value.sentences.length > 0) {
                 viewModel.references.push(new Reference(value.subject,value.sentences));
                 subjects.push(value.subject);
+                data += '################ Subject: ' + value.subject.toUpperCase() + " ################\r\n";
+                value.sentences.forEach((sent) => {
+                    data += '\t' + sent.trim();
+                    data += "\r\n"
+                });
+                data += "\r\n"
             }
         });
 
         var myHilitor = new Hilitor('content');
         myHilitor.apply(subjects.join(' '));
+
     }
 </script>
 
