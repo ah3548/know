@@ -24,6 +24,21 @@ englishStopWords = englishStopWords.concat([
 var months =  moment.months('MMMM').map((s) => { return String.prototype.toLowerCase.call(s)});
 englishStopWords = englishStopWords.concat( months );
 
+/* database */
+var flatfile = require('flat-file-db');
+var db = flatfile('my.db');
+
+db.on('open', function() {
+    /*
+    db.put('hello', {world:1});  // store some data
+    console.log(db.get('hello')) // prints {world:1}
+    */
+});
+
+function getUrlForTerm(term) {
+    return db.get(term);
+}
+
 /* WIKIPEDIA */
 function getWiki(page, onlySummary) {
     var request = require('request-promise-native'),
@@ -36,18 +51,18 @@ function getWiki(page, onlySummary) {
             explaintext: '',
             indexpageids: '',
             redirects: ''
-
         };
     if (onlySummary) {
         params.exintro ='';
     }
     var url = "http://en.wikipedia.org/w/api.php" + urlparse.format({ query: params });
-    winston.info(url);
     return request({
         uri: url,
         json: true
     }).then( (body) => {
         var article = body.query.pages[body.query.pageids[0]].extract;
+        var finalUrl = 'https://en.wikipedia.org/wiki/' + body.query.redirects[body.query.redirects.length-1].to;
+        db.put(page, finalUrl);
         return article;
     });
 }
@@ -403,7 +418,8 @@ module.exports = {
     getWord2VecModel,
     runW2VAndGetModel,
     getArticleWithSubject,
-    getCombinations
+    getCombinations,
+    getUrlForTerm
 };
 
 /*var subject = 'Irish Civil War';

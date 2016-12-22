@@ -1,7 +1,7 @@
 var expect = require("chai").expect, index = require("../index");
 
 describe("index", function() {
-    describe("getArticleFromWiki", function() {
+    describe.only("getArticleFromWiki", function() {
         it("religious", function() {
             return index.articleToTextFile('religious', false)
                 .then((result) => {

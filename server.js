@@ -9,6 +9,7 @@ var wordnet = require('wordnet'),
 winston.add(winston.transports.File, { filename: 'know.log' });
 winston.remove(winston.transports.Console);
 
+/* Web Server */
 var app = express();
 app.use(express.static('./'))
 
@@ -21,7 +22,6 @@ app.all('/', function(req, res, next) {
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!')
 });
-
 
 function ledge (thesis, connection) {
     /*
@@ -65,6 +65,7 @@ function ledge (thesis, connection) {
         /*
         This function takes the filename generated from the last part and runs word2vec to generate a model to query against.
          */
+            //return know.getWord2VecModel('w2vfiles/step2.txt-w2v.txt');
             return know.runW2VAndGetModel(fName);
         })
         .then((model) => {
@@ -134,7 +135,8 @@ function ledge (thesis, connection) {
                         }
                         return {
                             subject: result.subject,
-                            sentences: related ? related : []
+                            sentences: related ? related : [],
+                            url: know.getUrlForTerm(result.subject)
                         };
                     }
                 });

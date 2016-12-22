@@ -35,3 +35,311 @@
 {"level":"info","message":"http://en.wikipedia.org/w/api.php?action=query&titles=independence&format=json&prop=extracts&explaintext=&indexpageids=&redirects=","timestamp":"2016-12-16T05:02:40.240Z"}
 {"level":"info","message":"http://en.wikipedia.org/w/api.php?action=query&titles=state&format=json&prop=extracts&explaintext=&indexpageids=&redirects=","timestamp":"2016-12-16T05:02:40.242Z"}
 {"level":"info","message":"http://en.wikipedia.org/w/api.php?action=query&titles=free&format=json&prop=extracts&explaintext=&indexpageids=&redirects=","timestamp":"2016-12-16T05:03:37.469Z"}
+{"level":"info","message":"demography: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:01:55.730Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'articles/nagorno-karabakh'","timestamp":"2016-12-22T04:01:56.014Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:01:56.115Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:01:56.136Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:01:56.141Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:01:56.160Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:01:56.243Z"}
+{"level":"info","message":"historical: Error: ENOENT: no such file or directory, open 'articles/historical'","timestamp":"2016-12-22T04:01:56.305Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'articles/ethnic'","timestamp":"2016-12-22T04:01:56.453Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:01:56.461Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:01:56.490Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:08.917Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:09.100Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:09.105Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:09.166Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:09.197Z"}
+{"level":"info","message":"demography: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:09.209Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:09.213Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'articles/nagorno-karabakh'","timestamp":"2016-12-22T04:02:09.295Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'articles/ethnic'","timestamp":"2016-12-22T04:02:09.316Z"}
+{"level":"info","message":"historical: Error: ENOENT: no such file or directory, open 'articles/historical'","timestamp":"2016-12-22T04:02:09.322Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:09.381Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:34.874Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:34.992Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:34.995Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:35.045Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'articles/ethnic'","timestamp":"2016-12-22T04:02:35.047Z"}
+{"level":"info","message":"demography: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:35.049Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'articles/nagorno-karabakh'","timestamp":"2016-12-22T04:02:35.067Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:35.095Z"}
+{"level":"info","message":"historical: Error: ENOENT: no such file or directory, open 'articles/historical'","timestamp":"2016-12-22T04:02:35.131Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:35.168Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:35.220Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:42.729Z"}
+{"level":"info","message":"demography: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:42.874Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:42.877Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:42.887Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:42.889Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:42.891Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:42.920Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'articles/nagorno-karabakh'","timestamp":"2016-12-22T04:02:43.003Z"}
+{"level":"info","message":"historical: Error: ENOENT: no such file or directory, open 'articles/historical'","timestamp":"2016-12-22T04:02:43.072Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'articles/ethnic'","timestamp":"2016-12-22T04:02:43.080Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:02:43.085Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'articles/nagorno-karabakh'","timestamp":"2016-12-22T04:04:20.342Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:20.347Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:20.357Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:20.386Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:20.389Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:20.394Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'articles/ethnic'","timestamp":"2016-12-22T04:04:20.435Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:20.470Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:27.865Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:27.894Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:27.974Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:27.976Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:27.979Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:04:27.987Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'articles/nagorno-karabakh'","timestamp":"2016-12-22T04:04:28.030Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'articles/ethnic'","timestamp":"2016-12-22T04:04:28.082Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'articles/nagorno-karabakh'","timestamp":"2016-12-22T04:09:37.345Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:09:37.381Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:09:37.443Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'articles/ethnic'","timestamp":"2016-12-22T04:09:37.504Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:09:37.634Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:09:37.637Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:09:45.860Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:09:45.876Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'articles/nagorno-karabakh'","timestamp":"2016-12-22T04:09:45.925Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:09:45.997Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:09:46.009Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'articles/ethnic'","timestamp":"2016-12-22T04:09:46.111Z"}
+{"level":"info","message":"historical: Error: ENOENT: no such file or directory, open 'articles/historical'","timestamp":"2016-12-22T04:11:16.753Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'articles/ethnic'","timestamp":"2016-12-22T04:11:17.029Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:17.128Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:17.131Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'articles/nagorno-karabakh'","timestamp":"2016-12-22T04:11:17.206Z"}
+{"level":"info","message":"demography: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:17.262Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:17.266Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:17.314Z"}
+{"level":"info","message":"background: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:17.336Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:17.369Z"}
+{"level":"info","message":"its: Error: ENOENT: no such file or directory, open 'articles/its'","timestamp":"2016-12-22T04:11:17.380Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:17.453Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:17.542Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:26.762Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:26.853Z"}
+{"level":"info","message":"background: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:26.871Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'articles/nagorno-karabakh'","timestamp":"2016-12-22T04:11:26.880Z"}
+{"level":"info","message":"its: Error: ENOENT: no such file or directory, open 'articles/its'","timestamp":"2016-12-22T04:11:26.894Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:26.905Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:26.908Z"}
+{"level":"info","message":"demography: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:26.927Z"}
+{"level":"info","message":"historical: Error: ENOENT: no such file or directory, open 'articles/historical'","timestamp":"2016-12-22T04:11:26.941Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:26.947Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'articles/ethnic'","timestamp":"2016-12-22T04:11:27.001Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:27.040Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:11:27.079Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:17:01.570Z"}
+{"level":"info","message":"demography: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:17:01.592Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:17:01.603Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:17:01.617Z"}
+{"level":"info","message":"background: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:17:01.638Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:17:01.650Z"}
+{"level":"info","message":"historical: Error: ENOENT: no such file or directory, open 'C:\\Users\\Amir\\WebstormProjects\\know\\articles\\historical'","timestamp":"2016-12-22T04:17:01.681Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:17:01.714Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:17:01.725Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'C:\\Users\\Amir\\WebstormProjects\\know\\articles\\ethnic'","timestamp":"2016-12-22T04:17:01.750Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:17:01.764Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'C:\\Users\\Amir\\WebstormProjects\\know\\articles\\nagorno-karabakh'","timestamp":"2016-12-22T04:17:01.781Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.472Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.511Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.523Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.535Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.552Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.555Z"}
+{"level":"info","message":"background: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.557Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.562Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'C:\\Users\\Amir\\WebstormProjects\\know\\articles\\nagorno-karabakh'","timestamp":"2016-12-22T04:18:31.608Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.615Z"}
+{"level":"info","message":"historical: Error: ENOENT: no such file or directory, open 'C:\\Users\\Amir\\WebstormProjects\\know\\articles\\historical'","timestamp":"2016-12-22T04:18:31.626Z"}
+{"level":"info","message":"geopolitics: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.637Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'C:\\Users\\Amir\\WebstormProjects\\know\\articles\\ethnic'","timestamp":"2016-12-22T04:18:31.640Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.671Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:18:31.740Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:20:34.630Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:20:34.642Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:20:34.645Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:20:34.648Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:20:34.660Z"}
+{"level":"info","message":"affected: Error: ENOENT: no such file or directory, open 'C:\\Users\\Amir\\WebstormProjects\\know\\articles\\affected'","timestamp":"2016-12-22T04:20:34.667Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:20:34.673Z"}
+{"level":"info","message":"nagorno-karabakh: Error: ENOENT: no such file or directory, open 'C:\\Users\\Amir\\WebstormProjects\\know\\articles\\nagorno-karabakh'","timestamp":"2016-12-22T04:20:34.721Z"}
+{"level":"info","message":"ethnic: Error: ENOENT: no such file or directory, open 'C:\\Users\\Amir\\WebstormProjects\\know\\articles\\ethnic'","timestamp":"2016-12-22T04:20:34.750Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:20:34.769Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:20:34.786Z"}
+{"level":"info","message":"historical: Error: ENOENT: no such file or directory, open 'C:\\Users\\Amir\\WebstormProjects\\know\\articles\\historical'","timestamp":"2016-12-22T04:20:34.795Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:22:24.421Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:22:38.451Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:22:42.479Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:22:50.505Z"}
+{"level":"info","message":"historical: Error: ENOENT: no such file or directory, open 'C:\\Users\\Amir\\WebstormProjects\\know\\articles\\historical'","timestamp":"2016-12-22T04:22:54.539Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:23:57.581Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:24:02.667Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:24:08.731Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:25:05.963Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:26:49.573Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:26:49.648Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:26:49.649Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:26:49.670Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:26:58.901Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:26:58.958Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:26:58.961Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:26:58.964Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:26.559Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:26.706Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:26.737Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:26.759Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:26.762Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:26.770Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:26.842Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:34.990Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:35.088Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:35.144Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:35.176Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:35.186Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:35.188Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:28:35.267Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:29:40.929Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:29:40.938Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:29:40.941Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:29:40.967Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:29:40.991Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:29:49.724Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:29:49.823Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:29:49.848Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:29:49.853Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:29:49.949Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:14.480Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:14.485Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:14.489Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:14.494Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:14.559Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:14.688Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:23.416Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:23.453Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:23.528Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:23.591Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:23.629Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:23.631Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:36.677Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:36.805Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:36.813Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:36.838Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:37.017Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:44.772Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:44.780Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:44.825Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:44.973Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:32:45.051Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:17.460Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:17.557Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:17.560Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:17.602Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:17.604Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:17.819Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:17.831Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:26.248Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:26.252Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:26.397Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:26.400Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:26.408Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:26.544Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:33:26.591Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:49.249Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:49.251Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:49.255Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:49.258Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:49.328Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:49.342Z"}
+{"level":"info","message":"demography: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:49.393Z"}
+{"level":"info","message":"geopolitics: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:49.446Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:57.784Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:57.786Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:57.972Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:58.143Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:58.146Z"}
+{"level":"info","message":"demography: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:58.165Z"}
+{"level":"info","message":"geopolitics: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:58.197Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:36:58.296Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:04.679Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:04.782Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:04.816Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:04.817Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:04.820Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:04.822Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:04.829Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:04.881Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:04.994Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:05.037Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:13.005Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:13.119Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:13.122Z"}
+{"level":"info","message":"begin: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:13.124Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:13.128Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:13.133Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:13.139Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:13.169Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:13.288Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:39:13.332Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:39.053Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:39.056Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:39.143Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:39.145Z"}
+{"level":"info","message":"background: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:39.219Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:39.263Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:39.268Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:39.412Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:39.432Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:47.569Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:47.638Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:47.649Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:47.695Z"}
+{"level":"info","message":"background: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:47.967Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:48.056Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:48.060Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:48.170Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:40:48.243Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:20.732Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:20.734Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:20.736Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:20.738Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:20.857Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:20.870Z"}
+{"level":"info","message":"geopolitics: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:20.907Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:20.920Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:21.013Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:21.019Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:28.761Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:29.060Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:29.063Z"}
+{"level":"info","message":"wider: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:29.090Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:29.103Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:29.116Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:29.149Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:29.224Z"}
+{"level":"info","message":"geopolitics: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:29.236Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:41:29.278Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:40.613Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:40.615Z"}
+{"level":"info","message":"background: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:40.814Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:40.888Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:40.935Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:40.941Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:40.949Z"}
+{"level":"info","message":"geopolitics: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:41.031Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:41.095Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:41.108Z"}
+{"level":"info","message":"geopolitics: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:49.327Z"}
+{"level":"info","message":"region: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:49.493Z"}
+{"level":"info","message":"influences: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:49.539Z"}
+{"level":"info","message":"conflict: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:49.541Z"}
+{"level":"info","message":"background: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:49.543Z"}
+{"level":"info","message":"territory: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:49.545Z"}
+{"level":"info","message":"will: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:49.574Z"}
+{"level":"info","message":"problems: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:49.576Z"}
+{"level":"info","message":"azerbaijan: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:49.623Z"}
+{"level":"info","message":"armenia: TypeError: Cannot read property 'length' of undefined","timestamp":"2016-12-22T04:42:49.697Z"}

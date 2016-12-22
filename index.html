@@ -65,7 +65,7 @@
     <ul class="list-group col-md-12" data-bind="foreach: references" >
         <li class="list-group-item">
             <div>
-                <label data-bind="text: name"> </label> has <span data-bind='text: sentences().length'>&nbsp;</span> references:
+                <label data-bind="text: name"> </label> (<a data-bind="attr: { href: url, title: url }">link</a>) has <span data-bind='text: sentences().length'>&nbsp;</span> references:
             </span>
             </div>
             <ul data-bind="foreach: sentences">
@@ -94,9 +94,10 @@
     }
 
     // Define a "Person" class that tracks its own name and children, and has a method to add a new child
-    var Reference = function(name, sentences) {
+    var Reference = function(name, sentences, url) {
         this.name = ko.observable(name);
         this.sentences = ko.observableArray(sentences);
+        this.url = url;
     }
 
     var LDATerm = function (term, probability) {
@@ -164,9 +165,9 @@
 
         response.forEach( function(value) {
             if (value && value.sentences && value.sentences.length > 0) {
-                viewModel.references.push(new Reference(value.subject,value.sentences));
+                viewModel.references.push(new Reference(value.subject,value.sentences,value.url));
                 subjects.push(value.subject);
-                data += '################ Subject: ' + value.subject.toUpperCase() + " ################\r\n";
+                data += '################ Subject: ' + value.subject.toUpperCase() + " (" + value.url + ") ################\r\n";
                 value.sentences.forEach((sent) => {
                     data += '\t' + sent.trim();
                     data += "\r\n"
