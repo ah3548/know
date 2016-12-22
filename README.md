@@ -8,6 +8,13 @@
     * remove stop words
 1. (EXTRACT STEP)
     * use node-word2vec (underlying technology to google knowledge graph) to determine which information is most relevant and important
+
+## Important Files
+1. **index.html**: contains all web code. It uses [knockout](http://knockoutjs.com/) for data binding and [bootstrap](http://getbootstrap.com/) for styling.
+1. **server.js**: contains code for [websockets](https://www.npmjs.com/package/websocket) and [webserver](http://expressjs.com/). Here you can service any received messages with functions you have defined in index.js.
+1. **index.js**: contains all functional methods (including [lda](https://github.com/primaryobjects/lda) and [word2vec]()). You can defined new functions here and then [export](http://openmymind.net/2012/2/3/Node-Require-and-Exports/) them.
+1. **package.json**: lists all dependencies managed by [npm](https://www.npmjs.com/)
+
 ## Important Functions
 #### (found in index.js)
 1. **getArticle**: gets article from wikipedia, or cached version on filesystem
@@ -43,8 +50,18 @@ node server
 watch tail -n 50 know-server.log
 ```
 
+## How to Enhance
+#### (outline of function ledge in server.js)
+1. Run LDA (Here you can substitute you own analysis function to get a list of terms)
+1. For each term in lda get wikipedia article (Here you can call your own datasource per term)
+1. When all articles retrieved merge articles into 1 file for analysis (Here you can limit which articles to merge)
+1. Run word2vec which removes stopwords and returns a model (Here you can run your own term relevance analysis)
+1. Filter out terms with <= 0 similarity (Here you can choose your own threshold for filtering)
+1. Filter articles for each term for sentences containing 2 similar terms. (Here you can return only sentences that match your own criteria)
+1. Return to user in the same object format as specified in the client, for example index.html. (Here you can specify the format to return data to the user over the websocket)
+
 ## Useful Links
-[Installing Bash on Windows](
+1. [Installing Bash on Windows](
 http://www.windowscentral.com/how-install-bash-shell-command-line-windows-10)
-[Git Tutorial](https://www.atlassian.com/git/tutorials/what-is-version-control)
-[word2vec](https://en.wikipedia.org/wiki/Word2vec)
+1. [Git Tutorial](https://www.atlassian.com/git/tutorials/what-is-version-control)
+1. [word2vec](https://en.wikipedia.org/wiki/Word2vec)
